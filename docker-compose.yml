@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nurse_fatigue_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_data:/app/data
+    environment:
+      - PROJECT_NAME=Nurse Fatigue Intelligence & Workforce Optimization Platform
+      - DATABASE_URL=sqlite:////app/data/fatigue_platform.db
+      - CHROMA_DB_DIR=/app/data/chroma
+      - DOCS_DIR=/app/data/documents
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nurse_fatigue_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  backend_data:
