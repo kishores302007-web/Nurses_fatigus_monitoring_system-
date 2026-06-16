@@ -159,3 +159,10 @@ class RAGQuery(BaseModel):
 class RAGResponse(BaseModel):
     answer: str
     sources: List[str]
+
+class ShiftAllot(BaseModel):
+    nurse_id: str
+    department: str
+    shift_type: str
+    duration_hours: float
+

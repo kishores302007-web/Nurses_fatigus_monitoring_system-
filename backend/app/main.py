@@ -11,7 +11,7 @@ from app.core.config import settings
 from app.core.database import get_db, SessionLocal, Base, engine
 from app.core.security import verify_password, create_access_token, get_password_hash
 from app.models.models import User, Nurse, Device, SensorRecord, FatigueLog, Shift, Alert, AuditLog, ReplacementLog
-from app.schemas.schemas import UserLogin, Token, RAGQuery, RAGResponse, ReplacementCreate, UserCreate
+from app.schemas.schemas import UserLogin, Token, RAGQuery, RAGResponse, ReplacementCreate, UserCreate, ShiftAllot
 from app.ml.pipeline import ml_pipeline
 from app.ml.simulator import seed_db, generate_live_reading
 from app.services.replacement_engine import SmartReplacementEngine
@@ -335,6 +335,86 @@ def trigger_replacement(payload: ReplacementCreate, db: Session = Depends(get_db
     if not success:
         raise HTTPException(status_code=400, detail="Replacement failed. Verify resources.")
     return {"status": "success", "message": "Shift successfully optimized and logs committed."}
+
+@app.post(f"{settings.API_V1_STR}/shifts/allot")
+async def allot_shift(payload: ShiftAllot, db: Session = Depends(get_db)):
+    # 1. Fetch nurse
+    nurse = db.query(Nurse).filter(Nurse.id == payload.nurse_id).first()
+    if not nurse:
+        raise HTTPException(status_code=404, detail="Nurse not found")
+        
+    # 2. Deactivate any currently active shift for this nurse to avoid double-allocation
+    active_shifts = db.query(Shift).filter(
+        and_(Shift.nurse_id == nurse.id, Shift.status == "Active")
+    ).all()
+    for s in active_shifts:
+        s.status = "Completed"
+        
+    # 3. Create a new shift record starting now with specified duration in hours
+    start_time = datetime.utcnow()
+    end_time = start_time + timedelta(hours=payload.duration_hours)
+    
+    new_shift = Shift(
+        nurse_id=nurse.id,
+        start_time=start_time,
+        end_time=end_time,
+        status="Active",
+        current_work_hours=0.0
+    )
+    db.add(new_shift)
+    
+    # 4. Update the nurse profile (department, status, last seen)
+    nurse.department = payload.department
+    nurse.status = "Active"
+    nurse.last_seen = start_time
+    
+    # 5. Log this allotment action in audit logs
+    audit = AuditLog(
+        user="Supervisor",
+        action="SHIFT_ALLOTMENT",
+        timestamp=start_time,
+        details=f"Allotted nurse {nurse.name} to {payload.department} ward on {payload.shift_type} shift (Duration: {payload.duration_hours}h)."
+    )
+    db.add(audit)
+    
+    # Commit changes
+    db.commit()
+    
+    # 6. Update device if associated
+    device = db.query(Device).filter(Device.assigned_nurse_id == nurse.id).first()
+    if device:
+        device.status = "Active"
+        device.last_seen = start_time
+        db.commit()
+        
+    websocket_payload = {
+        "type": "TELEMETRY_UPDATE",
+        "nurse_id": nurse.id,
+        "nurse_name": nurse.name,
+        "nurse_code": nurse.nurse_id,
+        "department": nurse.department,
+        "fatigue_score": nurse.current_fatigue,
+        "risk_level": "Normal" if nurse.current_fatigue < 40 else ("Moderate" if nurse.current_fatigue < 60 else "High"),
+        "is_anomaly": False,
+        "shift_hours": 0.0,
+        "telemetry": {
+            "heart_rate": 72.0,
+            "hrv": 60.0,
+            "spo2": 98.0,
+            "gsr_voltage": 2.2,
+            "skin_temp": 33.5
+        },
+        "predictions": {
+            "predicted_2h": nurse.current_fatigue,
+            "predicted_4h": nurse.current_fatigue,
+            "predicted_end_shift": nurse.current_fatigue
+        }
+    }
+    
+    # Broadcast WebSocket update
+    await manager.broadcast(websocket_payload)
+    
+    return {"status": "success", "message": f"Successfully allotted {nurse.name} to {payload.department} for {payload.duration_hours} hours."}
 
 @app.get(settings.API_V1_STR + "/nurses/{nurse_id}/telemetry-history")
 def get_telemetry_history(nurse_id: str, db: Session = Depends(get_db)):

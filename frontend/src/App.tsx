@@ -8,6 +8,7 @@ import { ShiftOptimization } from './components/ShiftOptimization';
 import { Analytics } from './components/Analytics';
 import { Alerts } from './components/Alerts';
 import { AdminPanel } from './components/AdminPanel';
+import { DutyAllotment } from './components/DutyAllotment';
 import { Nurse } from './types/types';
 import { 
   Bell, 
@@ -151,6 +152,8 @@ export const App: React.FC = () => {
         return <Analytics />;
       case 'Alerts':
         return <Alerts />;
+      case 'Duty Allotment':
+        return <DutyAllotment />;
       case 'Administration':
         return <AdminPanel />;
       default:

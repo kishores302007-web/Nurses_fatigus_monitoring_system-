@@ -68,8 +68,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         reconnectTimeoutRef.current = setTimeout(connect, 3000);
       };
 
-      ws.onerror = (err) => {
-        console.error('WebSocket error:', err);
+      ws.onerror = () => {
+        // Silent close to trigger standard reconnect timeout without red console error logs
         ws.close();
       };
     };

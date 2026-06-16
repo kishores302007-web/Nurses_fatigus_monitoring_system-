@@ -6,7 +6,8 @@ import {
   BarChart3, 
   BellRing, 
   Settings, 
-  LogOut
+  LogOut,
+  CalendarPlus
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -22,6 +23,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, onL
     { id: 'Fatigue Monitoring', label: 'Fatigue Monitoring', icon: Activity },
     { id: 'Replacement Engine', label: 'Replacement Engine', icon: Users },
     { id: 'Shift Optimization', label: 'Shift Optimization', icon: Calendar },
+    { id: 'Duty Allotment', label: 'Duty Allotment', icon: CalendarPlus },
     { id: 'Analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'Alerts', label: 'Alerts', icon: BellRing },
     { id: 'Administration', label: 'Administration', icon: Settings },
