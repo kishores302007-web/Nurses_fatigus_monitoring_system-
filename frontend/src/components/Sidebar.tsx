@@ -1,11 +1,9 @@
-import React from 'react';
 import { 
   LayoutDashboard, 
   Activity, 
   Users, 
   Calendar, 
   BarChart3, 
-  Bot, 
   BellRing, 
   Settings, 
   LogOut
@@ -25,7 +23,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, onL
     { id: 'Replacement Engine', label: 'Replacement Engine', icon: Users },
     { id: 'Shift Optimization', label: 'Shift Optimization', icon: Calendar },
     { id: 'Analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'Knowledge Assistant', label: 'Knowledge Assistant', icon: Bot },
     { id: 'Alerts', label: 'Alerts', icon: BellRing },
     { id: 'Administration', label: 'Administration', icon: Settings },
   ];

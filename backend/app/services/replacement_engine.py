@@ -63,14 +63,8 @@ class SmartReplacementEngine:
                 continue
 
             # 4. Calculate Recommendation Score:
-            # - Lower fatigue is better (weights 50%)
-            # - Lower total hours worked is better (weights 30%)
-            # - Department proximity (same department gives bonus 20%)
-            fatigue_component = (40.0 - candidate.current_fatigue) / 40.0 * 50.0
-            work_hours_component = (10.0 - total_hours_24h) / 10.0 * 30.0
-            dept_bonus = 20.0 if candidate.department == fatigued_nurse.department else 0.0
-            
-            availability_score = round(fatigue_component + work_hours_component + dept_bonus, 1)
+            # Based purely on lowest fatigue score as requested (higher match score = lower fatigue)
+            availability_score = round(100.0 - candidate.current_fatigue, 1)
 
             recommendations.append({
                 "id": candidate.id,
@@ -84,7 +78,123 @@ class SmartReplacementEngine:
                 "status": candidate.status
             })
 
-        # Sort by availability score in descending order and limit to top 5
+        # FALLBACK 1: If we have fewer than 5 candidates, query offline standby nurses with same skills and fatigue < 50
+        if len(recommendations) < 5:
+            offline_candidates = db.query(Nurse).filter(
+                and_(
+                    Nurse.id != fatigued_nurse_id,
+                    Nurse.skill_category == fatigued_nurse.skill_category,
+                    Nurse.current_fatigue < 50.0,
+                    Nurse.status == "Offline"
+                )
+            ).all()
+            
+            for candidate in offline_candidates:
+                if len(recommendations) >= 5:
+                    break
+                if any(r["id"] == candidate.id for r in recommendations):
+                    continue
+                
+                recent_shifts = db.query(Shift).filter(
+                    and_(
+                        Shift.nurse_id == candidate.id,
+                        Shift.start_time >= (datetime_now() - timedelta(hours=24))
+                    )
+                ).all()
+                total_hours_24h = sum(s.current_work_hours for s in recent_shifts)
+                
+                # Apply a slight penalty for offline status to rank them below active options
+                availability_score = round(100.0 - candidate.current_fatigue - 10.0, 1)
+                
+                recommendations.append({
+                    "id": candidate.id,
+                    "name": candidate.name,
+                    "nurse_id": candidate.nurse_id,
+                    "department": candidate.department,
+                    "skill_category": candidate.skill_category,
+                    "fatigue_score": candidate.current_fatigue,
+                    "current_work_hours": round(total_hours_24h, 1),
+                    "availability_score": availability_score,
+                    "status": candidate.status
+                })
+
+        # FALLBACK 2: If we still have fewer than 5 candidates, relax fatigue threshold for active/break nurses up to 65%
+        if len(recommendations) < 5:
+            relaxed_candidates = db.query(Nurse).filter(
+                and_(
+                    Nurse.id != fatigued_nurse_id,
+                    Nurse.skill_category == fatigued_nurse.skill_category,
+                    Nurse.current_fatigue >= 40.0,
+                    Nurse.current_fatigue < 65.0,
+                    Nurse.status.in_(["Active", "Break"])
+                )
+            ).all()
+            
+            for candidate in relaxed_candidates:
+                if len(recommendations) >= 5:
+                    break
+                if any(r["id"] == candidate.id for r in recommendations):
+                    continue
+                    
+                recent_shifts = db.query(Shift).filter(
+                    and_(
+                        Shift.nurse_id == candidate.id,
+                        Shift.start_time >= (datetime_now() - timedelta(hours=24))
+                    )
+                ).all()
+                total_hours_24h = sum(s.current_work_hours for s in recent_shifts)
+                
+                availability_score = round(100.0 - candidate.current_fatigue, 1)
+                
+                recommendations.append({
+                    "id": candidate.id,
+                    "name": candidate.name,
+                    "nurse_id": candidate.nurse_id,
+                    "department": candidate.department,
+                    "skill_category": candidate.skill_category,
+                    "fatigue_score": candidate.current_fatigue,
+                    "current_work_hours": round(total_hours_24h, 1),
+                    "availability_score": availability_score,
+                    "status": candidate.status
+                })
+
+        # FALLBACK 3: If we STILL have fewer than 5 candidates, fetch any nurse in the hospital with the lowest fatigue
+        if len(recommendations) < 5:
+            any_nurses = db.query(Nurse).filter(
+                Nurse.id != fatigued_nurse_id
+            ).order_by(Nurse.current_fatigue.asc()).all()
+            
+            for candidate in any_nurses:
+                if len(recommendations) >= 5:
+                    break
+                if any(r["id"] == candidate.id for r in recommendations):
+                    continue
+                    
+                recent_shifts = db.query(Shift).filter(
+                    and_(
+                        Shift.nurse_id == candidate.id,
+                        Shift.start_time >= (datetime_now() - timedelta(hours=24))
+                    )
+                ).all()
+                total_hours_24h = sum(s.current_work_hours for s in recent_shifts)
+                
+                # Apply a penalty for skill category mismatch
+                skill_penalty = 15.0 if candidate.skill_category != fatigued_nurse.skill_category else 0.0
+                availability_score = round(100.0 - candidate.current_fatigue - skill_penalty, 1)
+                
+                recommendations.append({
+                    "id": candidate.id,
+                    "name": candidate.name,
+                    "nurse_id": candidate.nurse_id,
+                    "department": candidate.department,
+                    "skill_category": candidate.skill_category,
+                    "fatigue_score": candidate.current_fatigue,
+                    "current_work_hours": round(total_hours_24h, 1),
+                    "availability_score": availability_score,
+                    "status": candidate.status
+                })
+
+        # Sort by availability score in descending order (highest score first)
         recommendations.sort(key=lambda x: x["availability_score"], reverse=True)
         
         # Add ranks

@@ -15,6 +15,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [liveUpdates, setLiveUpdates] = useState<Record<string, TelemetryUpdateMessage>>({});
   const [recentAlerts, setRecentAlerts] = useState<string[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<any>(null);
 
   const clearRecentAlerts = () => setRecentAlerts([]);
 
@@ -64,7 +65,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       ws.onclose = () => {
         console.log('WebSocket disconnected. Reconnecting in 3 seconds...');
         setIsConnected(false);
-        setTimeout(connect, 3000);
+        reconnectTimeoutRef.current = setTimeout(connect, 3000);
       };
 
       ws.onerror = (err) => {
@@ -73,10 +74,19 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       };
     };
 
-    connect();
+    // Delay the connection to prevent Strict Mode synchronous mount/unmount abort warnings
+    const initialConnectTimeout = setTimeout(connect, 100);
 
     return () => {
+      clearTimeout(initialConnectTimeout);
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
       if (wsRef.current) {
+        wsRef.current.onopen = null;
+        wsRef.current.onmessage = null;
+        wsRef.current.onerror = null;
+        wsRef.current.onclose = null;
         wsRef.current.close();
       }
     };

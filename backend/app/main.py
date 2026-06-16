@@ -10,7 +10,7 @@ from sqlalchemy import and_, desc
 from app.core.config import settings
 from app.core.database import get_db, SessionLocal, Base, engine
 from app.core.security import verify_password, create_access_token, get_password_hash
-from app.models.models import User, Nurse, Device, SensorRecord, FatigueLog, Shift, Alert, AuditLog
+from app.models.models import User, Nurse, Device, SensorRecord, FatigueLog, Shift, Alert, AuditLog, ReplacementLog
 from app.schemas.schemas import UserLogin, Token, RAGQuery, RAGResponse, ReplacementCreate, UserCreate
 from app.ml.pipeline import ml_pipeline
 from app.ml.simulator import seed_db, generate_live_reading

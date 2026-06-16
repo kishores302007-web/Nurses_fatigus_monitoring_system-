@@ -30,8 +30,9 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
     try {
       const res = await fetch('/api/v1/nurses');
       const data: Nurse[] = await res.json();
-      // Filter active nurses with fatigue > 60 (to let users see replacements for high fatigue too, but focus on >75)
+      // Filter active nurses with fatigue > 60 and sort descending (highest fatigue first)
       const fatigued = data.filter(n => n.status === 'Active' && n.current_fatigue >= 60);
+      fatigued.sort((a, b) => b.current_fatigue - a.current_fatigue);
       setFatiguedNurses(fatigued);
       
       // If we had a selected nurse from another page, keep it, else pick the first

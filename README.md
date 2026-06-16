@@ -4,6 +4,19 @@ An enterprise-grade, hospital-ready solution that integrates wearable IoT device
 
 ---
 
+## 🛠️ Technology Stack
+
+The platform is designed around a modern, real-time distributed architecture:
+* **Frontend**: React (v18) + Vite + TypeScript + TailwindCSS + Recharts
+* **Backend API**: FastAPI + Uvicorn + SQLAlchemy
+* **Database**: SQLite (relational) + ChromaDB (vector)
+* **Machine Learning**: Scikit-Learn (Random Forest, Isolation Forest) + XGBoost
+* **IoT Firmware**: C++ (Arduino) + MQTT + WebSockets
+
+For detailed libraries, pooling settings, and protocols, refer to [TECH_STACK.md](file:///C:/Users/DELL/Desktop/IOT_intern_final_projectn/TECH_STACK.md).
+
+---
+
 ## 🚀 Key Modules
 1. **Attendance Dashboard (Module 1)**: Real-time nurse coverage status, auto-presence via wearable connectivity, visual presence heatmaps, and shift distributions.
 2. **Fatigue Monitoring (Module 2)**: Dynamic line charts for Heart Rate, HRV, GSR (Stress Index), Skin Temp, and a composite Fatigue Index.
@@ -98,8 +111,9 @@ IOT_intern_final_projectn/
    ```
 4. Open your web browser and navigate to **`http://localhost:3000`**.
 5. Use the following credentials to sign in:
-   - **Username**: `admin`
-   - **Password**: `admin123`
+   - **Username**: `admin1` | **Password**: `123`
+   - **Username**: `admin2` | **Password**: `321`
+   *(Registration is disabled)*
 
 ---
 

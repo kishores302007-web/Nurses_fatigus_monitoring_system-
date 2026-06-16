@@ -23,11 +23,21 @@ NURSE_NAMES = [
     "Andrew Baker", "Elizabeth Adams", "Joshua Nelson", "Linda Hill", "Kevin Ramirez",
     "Patricia Campbell", "Brian Mitchell", "Susan Carter", "Edward Roberts", "Jessica Gomez",
     "Ronald Phillips", "Sarah Evans", "Timothy Turner", "Karen Diaz", "Jason Parker",
-    "Helen Edwards", "Jeffrey Collins", "Deborah Stewart", "Gary Morris", "Maria Rogers"
+    "Helen Edwards", "Jeffrey Collins", "Deborah Stewart", "Gary Morris", "Maria Rogers",
+    "Ashley Smith", "Christopher Miller", "Amanda Davis", "Matthew Garcia", "Daniel Rodriguez",
+    "David Wilson", "James Martinez", "Jennifer Anderson", "John Taylor", "Joseph Thomas",
+    "Joshua Moore", "Jessica Jackson", "Justin Martin", "Karen Lee", "Kimberly Perez",
+    "Linda Thompson", "Lisa White", "Mary Harris", "Michael Sanchez", "Nancy Clark",
+    "Patricia Ramirez", "Paul Lewis", "Richard Robinson", "Robert Walker", "Ronald Young",
+    "Sandra Allen", "Sarah King", "Steven Wright", "Susan Scott", "Thomas Green",
+    "Timothy Baker", "William Adams", "Barbara Nelson", "Charles Hill", "Daniel Campbell",
+    "Dorothy Mitchell", "Elizabeth Carter", "Emily Roberts", "Helen Gomez", "James Phillips",
+    "John Evans", "Joseph Turner", "Margaret Diaz", "Maria Parker", "Patricia Edwards",
+    "Richard Collins", "Robert Stewart", "Susan Morris", "Thomas Rogers", "William Reed"
 ]
 
 def seed_db(db: Session):
-    """Seeds the database with 50 nurses, devices, shifts, alerts, and 100,000+ sensor records."""
+    """Seeds the database with 100 nurses, devices, shifts, alerts, and 200,000+ sensor records."""
     print("Initializing Database Seeding...")
     
     # Create tables
@@ -56,23 +66,24 @@ def seed_db(db: Session):
     db.add(admin1)
     db.add(admin2)
     db.commit()
+    print("Add 100 dummy data (nurses) in mysql database")
     print("Users seeded (admin1/123, admin2/321)")
 
-    # 2. Create 50 Nurses and Devices
+    # 2. Create 100 Nurses and Devices
     nurses = []
     devices = []
     for i, name in enumerate(NURSE_NAMES):
         dept = DEPARTMENTS[i % len(DEPARTMENTS)]
         skill = SKILL_CATEGORIES[dept]
         
-        # Nurse ID format: NS-001 to NS-050
+        # Nurse ID format: NS-001 to NS-100
         nurse_num = f"{i+1:03d}"
         nurse_id_str = f"NS-{nurse_num}"
         email = f"{name.lower().replace(' ', '.')}@hospital.org"
         
         # Determine status distribution
         status = "Offline"
-        if i < 40: # 40 active/break, 10 offline
+        if i < 80: # 80 active/break, 20 offline
             status = "Active" if random.random() > 0.15 else "Break"
 
         nurse = Nurse(
@@ -101,7 +112,7 @@ def seed_db(db: Session):
         devices.append(device)
         
     db.commit()
-    print("50 Nurses and Wearable Devices seeded.")
+    print("100 Nurses and Wearable Devices seeded.")
 
     # 3. Create shifts and historical records over last 30 days
     print("Generating 100,000+ sensor records over 30 days...")
@@ -275,6 +286,21 @@ def seed_db(db: Session):
     db.add_all(alerts_to_add)
     db.commit()
     print(f"Alert logs seeded: {len(alerts_to_add)} alerts")
+
+    # 5. Ensure each nurse has a different, unique current_fatigue score
+    print("Assigning unique fatigue scores to all nurses...")
+    all_nurses = db.query(Nurse).all()
+    # Force 5 active nurses to have very low fatigue scores around 9.0 (9.1 to 9.5)
+    low_fatigue_scores = [9.1, 9.2, 9.3, 9.4, 9.5]
+    # Generate the remaining unique fatigue scores starting from 15.0
+    unique_scores = [round(15.0 + i * 0.75, 1) for i in range(len(all_nurses) - 5)]
+    random.shuffle(unique_scores)
+    # Combine scores
+    final_scores = low_fatigue_scores + unique_scores
+    for idx, nurse in enumerate(all_nurses):
+        nurse.current_fatigue = final_scores[idx]
+    db.commit()
+    print("All nurses successfully assigned distinct fatigue scores (including 5 low fatigue scores around 9.0).")
     print("Database seeding completed successfully.")
 
 def generate_live_reading(nurse_name: str, shift_hours_worked: float) -> dict:

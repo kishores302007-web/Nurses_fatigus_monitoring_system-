@@ -6,7 +6,6 @@ import { FatigueMonitoring } from './components/FatigueMonitoring';
 import { ReplacementEngine } from './components/ReplacementEngine';
 import { ShiftOptimization } from './components/ShiftOptimization';
 import { Analytics } from './components/Analytics';
-import { KnowledgeAssistant } from './components/KnowledgeAssistant';
 import { Alerts } from './components/Alerts';
 import { AdminPanel } from './components/AdminPanel';
 import { Nurse } from './types/types';
@@ -150,8 +149,6 @@ export const App: React.FC = () => {
         return <ShiftOptimization />;
       case 'Analytics':
         return <Analytics />;
-      case 'Knowledge Assistant':
-        return <KnowledgeAssistant />;
       case 'Alerts':
         return <Alerts />;
       case 'Administration':

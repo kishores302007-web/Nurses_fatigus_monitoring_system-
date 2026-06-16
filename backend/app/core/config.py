@@ -6,7 +6,6 @@ class Settings:
     SECRET_KEY: str = os.getenv("SECRET_KEY", "SUPER_SECRET_SECURITY_TOKEN_KEY_987654321")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
     
-    # Default SQLite, override via DB URL environment variable
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL", 
         "sqlite:///C:/Users/DELL/Desktop/IOT_intern_final_projectn/backend/data/fatigue_platform.db"

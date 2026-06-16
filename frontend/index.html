@@ -2,6 +2,38 @@
 <html lang="en" class="h-full bg-slate-50">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Suppress browser extension error noise (e.g., Grammarly, Chrome extension message channel closures)
+      window.addEventListener('error', function (e) {
+        if (
+          (e.message && (
+            e.message.includes('message channel closed') ||
+            e.message.includes('Connection attempt superseded') ||
+            e.message.includes('Grammarly')
+          )) ||
+          (e.filename && e.filename.includes('chrome-extension'))
+        ) {
+          e.stopImmediatePropagation();
+        }
+      }, true);
+
+      window.addEventListener('unhandledrejection', function (e) {
+        const reason = e.reason;
+        if (reason) {
+          const message = reason.message || String(reason);
+          const stack = reason.stack || '';
+          if (
+            message.includes('message channel closed') ||
+            message.includes('Connection attempt superseded') ||
+            message.includes('Grammarly') ||
+            stack.includes('chrome-extension')
+          ) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+          }
+        }
+      }, true);
+    </script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nurse Fatigue Intelligence & Workforce Optimization Platform</title>
