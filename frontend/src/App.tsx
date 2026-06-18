@@ -18,7 +18,12 @@ import {
   Clock, 
   Lock,
   Activity,
-  AlertOctagon
+  AlertOctagon,
+  Sun,
+  Moon,
+  Mail,
+  Search,
+  LogOut
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -31,6 +36,29 @@ export const App: React.FC = () => {
   const [loggingIn, setLoggingIn] = useState(false);
 
   const [currentTab, setCurrentTab] = useState('Dashboard');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  // Handle Light/Dark theme initialization
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme as 'light' | 'dark');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    if (nextTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
   const [selectedNurse, setSelectedNurse] = useState<Nurse | null>(null);
   const [isAlertsDropdownOpen, setIsAlertsDropdownOpen] = useState(false);
   const [time, setTime] = useState(new Date().toLocaleTimeString());
@@ -231,7 +259,7 @@ export const App: React.FC = () => {
 
   // 2. Main Authenticated Console Layout
   return (
-    <div className="flex h-screen w-screen bg-slate-50 overflow-hidden">
+    <div className="flex h-screen w-screen bg-slate-50 dark:bg-slate-950 overflow-hidden text-slate-850 dark:text-slate-100">
       {/* Sidebar navigation */}
       <Sidebar 
         currentTab={currentTab}
@@ -244,46 +272,61 @@ export const App: React.FC = () => {
       <div className="flex flex-1 flex-col overflow-hidden">
         
         {/* Top Header */}
-        <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-8 flex-shrink-0">
-          {/* Left search/status details */}
+        <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-8 flex-shrink-0">
+          
+          {/* Left search bar */}
+          <div className="flex items-center gap-3 w-64 md:w-80">
+            <Search size={16} className="text-slate-400 dark:text-slate-550" />
+            <input
+              type="text"
+              placeholder="Search projects, clinicians..."
+              className="bg-transparent text-xs text-slate-700 dark:text-slate-200 focus:outline-none w-full placeholder-slate-400 dark:placeholder-slate-550"
+            />
+          </div>
+
+          {/* Right utility items */}
           <div className="flex items-center gap-4">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clinical Station Console</span>
             
             {/* Live Connection badge */}
-            <div className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold border transition ${
+            <div className={`hidden lg:flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold border transition ${
               isConnected 
-                ? 'bg-emerald-50 border-emerald-100 text-emerald-700' 
-                : 'bg-rose-50 border-rose-100 text-rose-700'
+                ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900 text-emerald-700 dark:text-emerald-450' 
+                : 'bg-rose-50 dark:bg-rose-950/20 border-rose-100 dark:border-rose-900 text-rose-700 dark:text-rose-450'
             }`}>
               {isConnected ? (
                 <>
-                  <Wifi size={12} /> Live Broker Connected
+                  <Wifi size={12} /> Live
                 </>
               ) : (
                 <>
-                  <WifiOff size={12} className="animate-pulse" /> Telemetry Broker Offline
+                  <WifiOff size={12} className="animate-pulse" /> Offline
                 </>
               )}
             </div>
-          </div>
 
-          {/* Right clock & alarms notifications bell */}
-          <div className="flex items-center gap-4">
             {/* Clock */}
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
+            <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-400 dark:text-slate-500">
               <Clock size={14} />
               <span>{time}</span>
+            </div>
+
+            {/* Mail Icon */}
+            <div className="rounded-lg border border-slate-200 dark:border-slate-800 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-800 dark:hover:text-slate-200 transition relative cursor-pointer">
+              <Mail size={15} />
+              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5 rounded-full bg-amber-500"></span>
             </div>
 
             {/* Notifications Bell */}
             <div className="relative">
               <button 
                 onClick={() => setIsAlertsDropdownOpen(!isAlertsDropdownOpen)}
-                className={`rounded-lg border p-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition ${
-                  recentAlerts.length > 0 ? 'bg-rose-50/50 border-rose-100' : 'border-slate-200 bg-white'
+                className={`rounded-lg border p-2 transition ${
+                  recentAlerts.length > 0 
+                    ? 'bg-rose-50/50 dark:bg-rose-950/20 border-rose-100 dark:border-rose-900 text-rose-600 dark:text-rose-400' 
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850'
                 }`}
               >
-                <Bell size={16} className={recentAlerts.length > 0 ? 'text-rose-500 animate-swing' : ''} />
+                <Bell size={15} className={recentAlerts.length > 0 ? 'text-rose-500 animate-swing' : ''} />
                 {recentAlerts.length > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[8px] font-extrabold text-white">
                     {recentAlerts.length}
@@ -293,15 +336,15 @@ export const App: React.FC = () => {
 
               {/* Collapsible Alerts Dropdown drawer */}
               {isAlertsDropdownOpen && (
-                <div className="absolute right-0 mt-2 z-50 w-80 rounded-xl border border-slate-200 bg-white p-4 shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
-                    <span className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1">
+                <div className="absolute right-0 mt-2 z-50 w-80 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2 mb-3">
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1">
                       <AlertOctagon size={14} className="text-rose-500" /> Active Roster Alarms
                     </span>
                     {recentAlerts.length > 0 && (
                       <button 
                         onClick={clearRecentAlerts}
-                        className="text-[10px] text-slate-400 hover:text-slate-600 font-bold"
+                        className="text-[10px] text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350 font-bold"
                       >
                         Dismiss All
                       </button>
@@ -317,23 +360,58 @@ export const App: React.FC = () => {
                             setCurrentTab('Alerts');
                             setIsAlertsDropdownOpen(false);
                           }}
-                          className="rounded-lg bg-rose-50/50 border border-rose-100 p-2.5 text-[10px] font-semibold text-rose-900 leading-snug cursor-pointer hover:bg-rose-50 transition"
+                          className="rounded-lg bg-rose-50/50 dark:bg-rose-950/10 border border-rose-100 dark:border-rose-900/50 p-2.5 text-[10px] font-semibold text-rose-900 dark:text-rose-200 leading-snug cursor-pointer hover:bg-rose-50 dark:hover:bg-rose-950/20 transition"
                         >
                           {msgStr}
                         </div>
                       ))
                     ) : (
-                      <p className="py-6 text-center text-[10px] text-slate-400">No active fatigue warnings triggered.</p>
+                      <p className="py-6 text-center text-[10px] text-slate-400 dark:text-slate-550">No active fatigue warnings triggered.</p>
                     )}
                   </div>
                 </div>
               )}
             </div>
+
+            {/* Sun/Moon Theme Toggler */}
+            <button 
+              onClick={toggleTheme} 
+              title={theme === 'light' ? "Switch to Night Mode" : "Switch to Light Mode"}
+              className="rounded-lg border border-slate-200 dark:border-slate-800 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-800 dark:hover:text-slate-200 transition"
+            >
+              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+            </button>
+
+            <span className="h-6 w-[1px] bg-slate-200 dark:bg-slate-800"></span>
+
+            {/* Supervisor Profile Widget */}
+            <div className="flex items-center gap-2">
+              <div className="relative cursor-pointer">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-bold text-xs uppercase shadow-sm">
+                  {username ? username.slice(0, 2) : 'SP'}
+                </div>
+                <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900"></span>
+              </div>
+              <div className="hidden md:flex flex-col text-left">
+                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 leading-none capitalize">{username || 'Supervisor'}</span>
+                <span className="text-[8px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Roster Manager</span>
+              </div>
+            </div>
+
+            {/* Power Exit / Logout Button */}
+            <button
+              onClick={handleLogout}
+              title="Session Sign Out"
+              className="rounded-lg border border-rose-100 dark:border-rose-950/40 p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition cursor-pointer"
+            >
+              <LogOut size={15} />
+            </button>
+
           </div>
         </header>
 
         {/* Main Content Workspace */}
-        <main className="flex-1 overflow-hidden">
+        <main className="flex-1 overflow-hidden bg-slate-50 dark:bg-slate-950">
           {renderTabContent()}
         </main>
 

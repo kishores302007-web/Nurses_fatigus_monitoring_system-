@@ -6,13 +6,10 @@ import {
   Clock,
   ArrowRightLeft,
   User,
-  ShieldAlert,
   Search,
   Activity,
-  CheckCircle2,
   CalendarDays,
   AlertCircle,
-  TrendingDown,
   RotateCw,
   Hourglass
 } from 'lucide-react';
@@ -64,11 +61,9 @@ export const HistoryDashboard: React.FC = () => {
       const res = await fetch('/api/v1/nurses');
       if (res.ok) {
         const data = await res.json();
-        // Sort nurses alphabetically by name
         const sorted = data.sort((a: Nurse, b: Nurse) => a.name.localeCompare(b.name));
         setNurses(sorted);
         
-        // Auto-select first nurse if none is selected
         if (sorted.length > 0 && !selectedNurseId) {
           setSelectedNurseId(sorted[0].id);
         }
@@ -112,7 +107,6 @@ export const HistoryDashboard: React.FC = () => {
     }
   }, [selectedNurseId]);
 
-  // Filter nurses list based on search query
   const filteredNurses = nurses.filter(n =>
     n.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     n.nurse_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -122,15 +116,15 @@ export const HistoryDashboard: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'Completed':
-        return <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200">Completed</span>;
+        return <span className="inline-flex items-center gap-1 rounded bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-450 border border-emerald-200 dark:border-emerald-900/50">Completed</span>;
       case 'Active':
-        return <span className="inline-flex items-center gap-1 rounded bg-sky-50 px-2 py-0.5 text-xs font-bold text-sky-700 border border-sky-200 animate-pulse">Active</span>;
+        return <span className="inline-flex items-center gap-1 rounded bg-purple-50 dark:bg-purple-950/20 px-2 py-0.5 text-xs font-bold text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-900/50 animate-pulse">Active</span>;
       case 'Replaced':
-        return <span className="inline-flex items-center gap-1 rounded bg-rose-50 px-2 py-0.5 text-xs font-bold text-rose-700 border border-rose-200">Replaced</span>;
+        return <span className="inline-flex items-center gap-1 rounded bg-rose-50 dark:bg-rose-950/20 px-2 py-0.5 text-xs font-bold text-rose-700 dark:text-rose-450 border border-rose-200 dark:border-rose-900/50">Replaced</span>;
       case 'Scheduled':
-        return <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-0.5 text-xs font-bold text-blue-700 border border-blue-200">Scheduled</span>;
+        return <span className="inline-flex items-center gap-1 rounded bg-blue-50 dark:bg-blue-950/20 px-2 py-0.5 text-xs font-bold text-blue-700 dark:text-blue-450 border border-blue-200 dark:border-blue-900/50">Scheduled</span>;
       default:
-        return <span className="inline-flex items-center gap-1 rounded bg-slate-50 px-2 py-0.5 text-xs font-bold text-slate-700 border border-slate-200">{status}</span>;
+        return <span className="inline-flex items-center gap-1 rounded bg-slate-50 dark:bg-slate-800 px-2 py-0.5 text-xs font-bold text-slate-700 dark:text-slate-350 border border-slate-200 dark:border-slate-700">{status}</span>;
     }
   };
 
@@ -145,25 +139,25 @@ export const HistoryDashboard: React.FC = () => {
   };
 
   const getFatigueRiskColor = (score: number) => {
-    if (score >= 75) return 'text-rose-600 font-extrabold';
-    if (score >= 50) return 'text-amber-600 font-bold';
-    return 'text-emerald-600 font-bold';
+    if (score >= 75) return 'text-rose-600 dark:text-rose-400 font-extrabold';
+    if (score >= 50) return 'text-amber-605 dark:text-amber-400 font-bold';
+    return 'text-emerald-600 dark:text-emerald-450 font-bold';
   };
 
   return (
-    <div className="h-full space-y-6 overflow-y-auto px-8 py-6">
+    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 dark:bg-slate-950 text-slate-850 dark:text-slate-100">
       {/* Page Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-150 dark:border-slate-800 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <History className="text-sky-500" size={24} /> Clinician Roster & Shift History
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <History className="text-purple-500" size={24} /> Clinician Roster & Shift History
           </h2>
-          <p className="text-sm text-slate-500">Track and review past performance, active workloads, fatigue-triggered replacement logs, and upcoming duties.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Track and review past performance, active workloads, fatigue-triggered replacement logs, and upcoming duties.</p>
         </div>
         <button
           onClick={fetchNursesList}
           disabled={loadingNurses || loadingHistory}
-          className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+          className="flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-350 hover:bg-slate-55 dark:hover:bg-slate-850 transition"
         >
           <RotateCw size={14} className={loadingNurses || loadingHistory ? 'animate-spin' : ''} />
           Sync Roster
@@ -171,7 +165,7 @@ export const HistoryDashboard: React.FC = () => {
       </div>
 
       {errorMsg && (
-        <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-700 flex items-center gap-2">
+        <div className="rounded-lg border border-rose-200 bg-rose-50 dark:bg-rose-950/20 p-4 text-sm font-semibold text-rose-700 dark:text-rose-400 flex items-center gap-2">
           <AlertCircle size={16} /> {errorMsg}
         </div>
       )}
@@ -179,20 +173,20 @@ export const HistoryDashboard: React.FC = () => {
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-4">
         {/* Clinician Selector Panel (Left) */}
         <div className="xl:col-span-1 space-y-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col h-[650px]">
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm flex flex-col h-[650px] text-left">
+            <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <User size={14} /> Search Clinician
             </h4>
             
             {/* Search Input */}
             <div className="relative mb-3">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 dark:text-slate-550" />
               <input
                 type="text"
                 placeholder="Name, ID, or department..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-3 text-xs text-slate-800 focus:outline-none focus:border-sky-500 focus:bg-white transition"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 py-2 pl-9 pr-3 text-xs text-slate-700 dark:text-slate-250 focus:outline-none focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 transition placeholder-slate-400 dark:placeholder-slate-550"
               />
             </div>
 
@@ -200,7 +194,7 @@ export const HistoryDashboard: React.FC = () => {
             <div className="flex-1 overflow-y-auto space-y-2 pr-1">
               {loadingNurses ? (
                 <div className="flex flex-col items-center justify-center py-20 text-slate-400 gap-2">
-                  <RotateCw className="animate-spin text-sky-500" size={24} />
+                  <RotateCw className="animate-spin text-purple-500" size={24} />
                   <span className="text-xs">Loading clinician directory...</span>
                 </div>
               ) : filteredNurses.length > 0 ? (
@@ -210,21 +204,21 @@ export const HistoryDashboard: React.FC = () => {
                     <button
                       key={n.id}
                       onClick={() => setSelectedNurseId(n.id)}
-                      className={`w-full text-left rounded-lg p-3 border transition-all duration-200 ${
+                      className={`w-full text-left rounded-lg p-3 border transition-all duration-150 ${
                         isSelected
-                          ? 'bg-sky-50/70 border-sky-300 shadow-xs'
-                          : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50/50'
+                          ? 'bg-purple-50/70 dark:bg-purple-950/20 border-purple-300 dark:border-purple-900 shadow-xs'
+                          : 'border-slate-105 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-850/40'
                       }`}
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <h6 className="font-bold text-slate-900 text-xs">{n.name}</h6>
-                          <p className="text-[10px] text-slate-400 font-mono mt-0.5">{n.nurse_id} • {n.department}</p>
+                          <h6 className="font-bold text-slate-900 dark:text-white text-xs">{n.name}</h6>
+                          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">{n.nurse_id} • {n.department}</p>
                         </div>
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                          n.status === 'Active' ? 'bg-emerald-100 text-emerald-800' :
-                          n.status === 'Break' ? 'bg-amber-100 text-amber-800' :
-                          'bg-slate-100 text-slate-600'
+                          n.status === 'Active' ? 'bg-emerald-100 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-400' :
+                          n.status === 'Break' ? 'bg-amber-100 dark:bg-amber-950/20 text-amber-805 dark:text-amber-400' :
+                          'bg-slate-100 dark:bg-slate-800 text-slate-605 dark:text-slate-400'
                         }`}>
                           {n.status}
                         </span>
@@ -233,7 +227,7 @@ export const HistoryDashboard: React.FC = () => {
                   );
                 })
               ) : (
-                <p className="text-center py-10 text-xs text-slate-400">No clinicians found.</p>
+                <p className="text-center py-10 text-xs text-slate-400 dark:text-slate-600">No clinicians found.</p>
               )}
             </div>
           </div>
@@ -242,27 +236,27 @@ export const HistoryDashboard: React.FC = () => {
         {/* Shift Logs Workspace (Right) */}
         <div className="xl:col-span-3 space-y-6">
           {loadingHistory ? (
-            <div className="flex flex-col items-center justify-center py-40 border border-slate-200 bg-white rounded-xl shadow-sm gap-2">
-              <RotateCw className="animate-spin text-sky-500" size={32} />
-              <span className="text-sm font-semibold text-slate-500">Loading audit history...</span>
+            <div className="flex flex-col items-center justify-center py-40 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl shadow-sm gap-2">
+              <RotateCw className="animate-spin text-purple-500" size={32} />
+              <span className="text-sm font-bold text-slate-500 dark:text-slate-450">Loading audit history...</span>
             </div>
           ) : historyData ? (
             <>
               {/* Nurse Summary Header Card */}
-              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6 text-left">
                 <div>
                   <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-bold text-slate-900">{historyData.nurse.name}</h3>
-                    <span className="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-semibold">{historyData.nurse.nurse_id}</span>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">{historyData.nurse.name}</h3>
+                    <span className="text-xs font-mono bg-slate-105 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded font-semibold border dark:border-slate-700">{historyData.nurse.nurse_id}</span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-slate-500 dark:text-slate-450 mt-1">
                     {historyData.nurse.skill_category} • {historyData.nurse.email}
                   </p>
                   <div className="mt-3 flex items-center gap-2.5">
-                    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                      historyData.nurse.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                      historyData.nurse.status === 'Break' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                      'bg-slate-50 text-slate-600 border border-slate-200'
+                    <span className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-bold border ${
+                      historyData.nurse.status === 'Active' ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-405 border-emerald-100 dark:border-emerald-900/50' :
+                      historyData.nurse.status === 'Break' ? 'bg-amber-50 dark:bg-amber-950/20 text-amber-705 dark:text-amber-400 border-amber-100 dark:border-amber-900/50' :
+                      'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-450 border-slate-205 dark:border-slate-705'
                     }`}>
                       <span className={`h-1.5 w-1.5 rounded-full ${
                         historyData.nurse.status === 'Active' ? 'bg-emerald-500 animate-pulse' :
@@ -271,23 +265,23 @@ export const HistoryDashboard: React.FC = () => {
                       }`} />
                       {historyData.nurse.status}
                     </span>
-                    <span className="text-xs text-slate-400 font-semibold">•</span>
-                    <span className="text-xs font-semibold text-slate-500">
-                      Ward: <span className="text-slate-800 font-bold">{historyData.nurse.department}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-600 font-bold">•</span>
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-450">
+                      Ward Duty: <span className="text-purple-600 dark:text-purple-400 font-extrabold">{historyData.nurse.department}</span>
                     </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 md:flex md:items-center md:gap-8 border-t border-slate-100 pt-4 md:border-t-0 md:pt-0">
-                  <div className="text-center md:text-right">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Current Stress</p>
-                    <h5 className={`text-xl font-extrabold mt-0.5 ${getFatigueRiskColor(historyData.nurse.current_fatigue)}`}>
+                <div className="grid grid-cols-2 gap-4 md:flex md:items-center md:gap-8 border-t border-slate-100 dark:border-slate-800 pt-4 md:border-t-0 md:pt-0">
+                  <div className="text-left md:text-right">
+                    <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Current Stress</p>
+                    <h5 className={`text-xl font-black mt-0.5 ${getFatigueRiskColor(historyData.nurse.current_fatigue)}`}>
                       {historyData.nurse.current_fatigue}%
                     </h5>
                   </div>
-                  <div className="text-center md:text-right">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Max Roster Shift</p>
-                    <h5 className="text-xl font-extrabold text-slate-800 mt-0.5">
+                  <div className="text-left md:text-right">
+                    <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Max Roster Shift</p>
+                    <h5 className="text-xl font-black text-slate-800 dark:text-slate-200 mt-0.5">
                       {historyData.nurse.max_shift_hours} Hrs
                     </h5>
                   </div>
@@ -296,55 +290,55 @@ export const HistoryDashboard: React.FC = () => {
 
               {/* KPI Summary Grid */}
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 shadow-xs">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs text-left">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Shifts</span>
-                    <CalendarDays size={16} className="text-sky-500" />
+                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Total Shifts</span>
+                    <CalendarDays size={16} className="text-purple-500" />
                   </div>
-                  <h4 className="text-2xl font-black text-slate-850 mt-2">{historyData.history.length}</h4>
-                  <p className="text-[10px] text-slate-400 font-medium mt-1">Worked past 30 days</p>
+                  <h4 className="text-2xl font-black text-slate-800 dark:text-slate-200 mt-2">{historyData.history.length}</h4>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-550 font-semibold mt-1">Worked past 30 days</p>
                 </div>
 
-                <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 shadow-xs">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs text-left">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Hours</span>
-                    <Clock size={16} className="text-sky-500" />
+                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Total Hours</span>
+                    <Clock size={16} className="text-purple-500" />
                   </div>
-                  <h4 className="text-2xl font-black text-slate-850 mt-2">
+                  <h4 className="text-2xl font-black text-slate-800 dark:text-slate-200 mt-2">
                     {historyData.history.reduce((acc, curr) => acc + curr.hours_worked, 0).toFixed(1)}h
                   </h4>
-                  <p className="text-[10px] text-slate-400 font-medium mt-1">Cumulated duty duration</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-550 font-semibold mt-1">Cumulated duty duration</p>
                 </div>
 
-                <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 shadow-xs">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs text-left">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Replacements</span>
+                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Replacements</span>
                     <ArrowRightLeft size={16} className="text-amber-500" />
                   </div>
-                  <h4 className="text-2xl font-black text-slate-850 mt-2">{historyData.replacements.length}</h4>
-                  <p className="text-[10px] text-slate-400 font-medium mt-1">Fatigue swaps / stand-ins</p>
+                  <h4 className="text-2xl font-black text-slate-800 dark:text-slate-200 mt-2">{historyData.replacements.length}</h4>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-550 font-semibold mt-1">Fatigue swaps / stand-ins</p>
                 </div>
 
-                <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 shadow-xs">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs text-left">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Upcoming Duties</span>
+                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Upcoming Duties</span>
                     <Hourglass size={16} className="text-blue-500" />
                   </div>
-                  <h4 className="text-2xl font-black text-slate-850 mt-2">{historyData.upcoming.length}</h4>
-                  <p className="text-[10px] text-slate-400 font-medium mt-1">Future roster allocations</p>
+                  <h4 className="text-2xl font-black text-slate-800 dark:text-slate-200 mt-2">{historyData.upcoming.length}</h4>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-550 font-semibold mt-1">Future roster allocations</p>
                 </div>
               </div>
 
               {/* Tab Selector & Main Panels */}
-              <div className="rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col h-[400px]">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex flex-col h-[400px]">
                 {/* Tabs */}
-                <div className="flex border-b border-slate-150 px-4 pt-2 bg-slate-50/50 rounded-t-xl shrink-0">
+                <div className="flex border-b border-slate-150 dark:border-slate-800 px-4 pt-2 bg-slate-50/50 dark:bg-slate-900/40 rounded-t-xl shrink-0">
                   <button
                     onClick={() => setActiveTab('history')}
                     className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold border-b-2 transition-all duration-150 ${
                       activeTab === 'history'
-                        ? 'border-sky-500 text-sky-600'
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
+                        ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                        : 'border-transparent text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                     }`}
                   >
                     <History size={14} /> Past Shift History ({historyData.history.length})
@@ -353,8 +347,8 @@ export const HistoryDashboard: React.FC = () => {
                     onClick={() => setActiveTab('replacements')}
                     className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold border-b-2 transition-all duration-150 ${
                       activeTab === 'replacements'
-                        ? 'border-sky-500 text-sky-600'
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
+                        ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                        : 'border-transparent text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                     }`}
                   >
                     <ArrowRightLeft size={14} /> Fatigue Replacements ({historyData.replacements.length})
@@ -363,8 +357,8 @@ export const HistoryDashboard: React.FC = () => {
                     onClick={() => setActiveTab('upcoming')}
                     className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold border-b-2 transition-all duration-150 ${
                       activeTab === 'upcoming'
-                        ? 'border-sky-500 text-sky-600'
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
+                        ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                        : 'border-transparent text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                     }`}
                   >
                     <Calendar size={14} /> Upcoming Shifts ({historyData.upcoming.length})
@@ -372,7 +366,7 @@ export const HistoryDashboard: React.FC = () => {
                 </div>
 
                 {/* Tab Panel Contents */}
-                <div className="flex-1 overflow-y-auto p-5">
+                <div className="flex-1 overflow-y-auto p-5 text-left">
                   {/* TAB 1: Past Shifts History */}
                   {activeTab === 'history' && (
                     <div className="space-y-4">
@@ -380,7 +374,7 @@ export const HistoryDashboard: React.FC = () => {
                         <div className="relative overflow-x-auto">
                           <table className="w-full text-left border-collapse">
                             <thead>
-                              <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                              <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400 dark:text-slate-550 uppercase tracking-wider">
                                 <th className="py-2.5 px-2">Shift Period / Date</th>
                                 <th className="py-2.5 px-2">Shift Type</th>
                                 <th className="py-2.5 px-2">Department</th>
@@ -388,21 +382,21 @@ export const HistoryDashboard: React.FC = () => {
                                 <th className="py-2.5 px-2 text-right">Status</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-50 text-xs">
+                            <tbody className="divide-y divide-slate-50 dark:divide-slate-850 text-xs text-slate-700 dark:text-slate-350">
                               {historyData.history.map((item) => {
                                 const startHour = new Date(item.start_time).getHours();
                                 const shiftLabel = startHour >= 18 ? 'Night Shift' : 'Morning Shift';
                                 return (
-                                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
+                                  <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/20 transition-colors">
                                     <td className="py-3 px-2">
-                                      <p className="font-semibold text-slate-800">{formatDate(item.start_time)}</p>
-                                      <span className="text-[10px] text-slate-400 font-mono mt-0.5">
+                                      <p className="font-bold text-slate-800 dark:text-slate-205">{formatDate(item.start_time)}</p>
+                                      <span className="text-[10px] text-slate-400 dark:text-slate-550 font-mono mt-0.5 block">
                                         {formatDateTime(item.start_time).split(',')[1].trim()} - {formatDateTime(item.end_time).split(',')[1].trim()}
                                       </span>
                                     </td>
-                                    <td className="py-3 px-2 font-medium text-slate-600">{shiftLabel}</td>
-                                    <td className="py-3 px-2 font-semibold text-slate-700">{item.department}</td>
-                                    <td className="py-3 px-2 font-mono text-slate-600 font-medium">{item.hours_worked.toFixed(1)} Hrs</td>
+                                    <td className="py-3 px-2 font-bold text-slate-500 dark:text-slate-400">{shiftLabel}</td>
+                                    <td className="py-3 px-2 font-bold text-slate-800 dark:text-slate-200">{item.department}</td>
+                                    <td className="py-3 px-2 font-mono text-slate-650 dark:text-slate-400 font-semibold">{item.hours_worked.toFixed(1)} Hrs</td>
                                     <td className="py-3 px-2 text-right">{getStatusBadge(item.status)}</td>
                                   </tr>
                                 );
@@ -411,8 +405,8 @@ export const HistoryDashboard: React.FC = () => {
                           </table>
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-2 border border-dashed border-slate-200 rounded-lg">
-                          <Clock size={32} className="text-slate-300" />
+                        <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-2 border border-dashed border-slate-200 dark:border-slate-800 rounded-lg">
+                          <Clock size={32} className="text-slate-300 dark:text-slate-600" />
                           <span className="text-xs">No historical shifts found in the logs.</span>
                         </div>
                       )}
@@ -427,50 +421,50 @@ export const HistoryDashboard: React.FC = () => {
                           {historyData.replacements.map((r) => {
                             const isReplaced = r.role === 'Replaced';
                             return (
-                              <div key={r.id} className="rounded-lg border border-slate-100 bg-slate-50/40 p-4 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                              <div key={r.id} className="rounded-lg border border-slate-105 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-950/10 p-4 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                                 <div className="space-y-1 flex-1">
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <span className={`inline-block rounded px-2 py-0.5 text-[10px] font-bold border ${
                                       isReplaced
-                                        ? 'bg-rose-50 text-rose-700 border-rose-200'
-                                        : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                        ? 'bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-405 border-rose-200 dark:border-rose-900/50'
+                                        : 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-405 border-emerald-200 dark:border-emerald-900/50'
                                     }`}>
                                       {isReplaced ? 'Replaced (Fatigue Swap)' : 'Replacement Stand-In'}
                                     </span>
-                                    <span className="text-slate-300">|</span>
-                                    <span className="text-[10px] text-slate-400 font-mono font-semibold">{formatDateTime(r.timestamp)}</span>
+                                    <span className="text-slate-300 dark:text-slate-700">|</span>
+                                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono font-semibold">{formatDateTime(r.timestamp)}</span>
                                   </div>
                                   
-                                  <div className="text-xs text-slate-700 font-semibold pt-1">
+                                  <div className="text-xs text-slate-700 dark:text-slate-350 font-bold pt-1">
                                     {isReplaced ? (
                                       <span>
-                                        Replaced by <span className="text-sky-600 font-extrabold">{r.replacement_nurse}</span> in the <span className="text-slate-900 font-bold">{r.department} Ward</span>.
+                                        Replaced by <span className="text-purple-600 dark:text-purple-400 font-black">{r.replacement_nurse}</span> in the <span className="text-slate-900 dark:text-white font-bold">{r.department} Ward</span>.
                                       </span>
                                     ) : (
                                       <span>
-                                        Replaced <span className="text-sky-600 font-extrabold">{r.original_nurse}</span> in the <span className="text-slate-900 font-bold">{r.department} Ward</span>.
+                                        Replaced <span className="text-purple-600 dark:text-purple-400 font-black">{r.original_nurse}</span> in the <span className="text-slate-900 dark:text-white font-bold">{r.department} Ward</span>.
                                       </span>
                                     )}
                                   </div>
                                   
                                   {r.justification && (
-                                    <p className="text-[10px] text-slate-500 italic bg-white border border-slate-100 rounded p-2 mt-1">
+                                    <p className="text-[10px] text-slate-550 dark:text-slate-450 italic bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded p-2 mt-1">
                                       &ldquo;{r.justification}&rdquo;
                                     </p>
                                   )}
                                 </div>
                                 
-                                <div className="shrink-0 flex items-center gap-1.5 text-xs text-slate-500 font-bold">
+                                <div className="shrink-0 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-450 font-bold">
                                   <span>Swap Status:</span>
-                                  <span className="rounded bg-emerald-50 text-emerald-700 border border-emerald-100 px-1.5 py-0.5 text-[10px] uppercase font-extrabold">{r.status}</span>
+                                  <span className="rounded bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900 px-1.5 py-0.5 text-[10px] uppercase font-extrabold">{r.status}</span>
                                 </div>
                               </div>
                             );
                           })}
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-2 border border-dashed border-slate-200 rounded-lg">
-                          <ArrowRightLeft size={32} className="text-slate-300" />
+                        <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-2 border border-dashed border-slate-200 dark:border-slate-800 rounded-lg">
+                          <ArrowRightLeft size={32} className="text-slate-300 dark:text-slate-600" />
                           <span className="text-xs">No fatigue replacement entries recorded for this clinician.</span>
                         </div>
                       )}
@@ -485,15 +479,15 @@ export const HistoryDashboard: React.FC = () => {
                           const startHour = new Date(u.start_time).getHours();
                           const shiftLabel = startHour >= 18 ? 'Night Shift (19:00 - 07:00)' : 'Morning Shift (07:00 - 19:00)';
                           return (
-                            <div key={u.id} className="rounded-lg border border-slate-200 bg-white p-4 hover:border-sky-300 transition duration-200 shadow-xs flex items-start gap-3.5 relative">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-50 text-sky-500 shrink-0">
+                            <div key={u.id} className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 hover:border-purple-300 dark:hover:border-purple-900 transition duration-200 shadow-xs flex items-start gap-3.5 relative">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-950/20 text-purple-500 shrink-0">
                                 <CalendarDays size={20} />
                               </div>
                               <div className="space-y-1">
-                                <h6 className="text-xs font-bold text-slate-900 leading-none">{formatDate(u.start_time)}</h6>
-                                <p className="text-[10px] font-semibold text-sky-600">{shiftLabel}</p>
-                                <div className="flex items-center gap-2 text-[10px] text-slate-400 pt-1 font-semibold">
-                                  <span>Ward: <strong className="text-slate-600">{u.department}</strong></span>
+                                <h6 className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-none">{formatDate(u.start_time)}</h6>
+                                <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400">{shiftLabel}</p>
+                                <div className="flex items-center gap-2 text-[10px] text-slate-400 dark:text-slate-500 pt-1 font-semibold">
+                                  <span>Ward: <strong className="text-slate-600 dark:text-slate-400">{u.department}</strong></span>
                                   <span>•</span>
                                   <span>Duration: 12.0h</span>
                                 </div>
@@ -505,8 +499,8 @@ export const HistoryDashboard: React.FC = () => {
                           );
                         })
                       ) : (
-                        <div className="col-span-2 flex flex-col items-center justify-center py-16 text-slate-400 gap-2 border border-dashed border-slate-200 rounded-lg">
-                          <Calendar size={32} className="text-slate-300" />
+                        <div className="col-span-2 flex flex-col items-center justify-center py-16 text-slate-400 gap-2 border border-dashed border-slate-200 dark:border-slate-800 rounded-lg">
+                          <Calendar size={32} className="text-slate-300 dark:text-slate-600" />
                           <span className="text-xs">No upcoming shifts scheduled.</span>
                         </div>
                       )}
@@ -516,9 +510,9 @@ export const HistoryDashboard: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center py-40 border border-slate-200 bg-white rounded-xl shadow-sm gap-2">
-              <Activity size={32} className="text-slate-300 animate-pulse" />
-              <span className="text-xs font-semibold text-slate-400">Select a clinician from the list to view their detailed log.</span>
+            <div className="flex flex-col items-center justify-center py-40 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl shadow-sm gap-2">
+              <Activity size={32} className="text-slate-305 dark:text-slate-600 animate-pulse" />
+              <span className="text-xs font-bold text-slate-400 dark:text-slate-500">Select a clinician from the list to view their detailed log.</span>
             </div>
           )}
         </div>

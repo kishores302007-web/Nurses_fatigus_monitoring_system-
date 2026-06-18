@@ -119,27 +119,24 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
   });
 
   const getFatigueBadgeClass = (score: number) => {
-    if (score <= 30) return 'bg-emerald-50 text-emerald-700 border-emerald-100';
-    if (score <= 60) return 'bg-amber-50 text-amber-700 border-amber-100';
-    if (score <= 80) return 'bg-orange-50 text-orange-700 border-orange-100';
-    return 'bg-rose-50 text-rose-700 border-rose-100 animate-pulse';
+    if (score <= 30) return 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50';
+    if (score <= 60) return 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-900/50';
+    if (score <= 80) return 'bg-orange-50 dark:bg-orange-950/20 text-orange-700 dark:text-orange-400 border-orange-100 dark:border-orange-900/50';
+    return 'bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-900/50 animate-pulse';
   };
 
   const getStatusBadgeClass = (status: string) => {
-    if (status === 'Active') return 'bg-sky-50 text-sky-700 border-sky-100';
-    if (status === 'Break') return 'bg-yellow-50 text-yellow-700 border-yellow-100';
-    return 'bg-slate-100 text-slate-600 border-slate-200';
+    if (status === 'Active') return 'bg-purple-50 dark:bg-purple-950/20 text-purple-700 dark:text-purple-400 border-purple-100 dark:border-purple-900/50';
+    if (status === 'Break') return 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-450 border-amber-100 dark:border-amber-900/50';
+    return 'bg-slate-100 dark:bg-slate-800 text-slate-650 dark:text-slate-400 border-slate-200 dark:border-slate-700';
   };
-
-  // Recharts color palette
-  const COLORS = ['#0ea5e9', '#0d9488', '#94a3b8'];
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center bg-slate-50">
+      <div className="flex h-full items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-sky-500 border-t-transparent"></div>
-          <p className="text-sm font-semibold text-slate-500">Loading Clinical Registries...</p>
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-purple-500 border-t-transparent"></div>
+          <p className="text-sm font-semibold text-slate-500 dark:text-slate-450">Loading Clinical Registries...</p>
         </div>
       </div>
     );
@@ -153,76 +150,82 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
   })) : [];
 
   return (
-    <div className="h-full space-y-6 overflow-y-auto px-8 py-6">
+    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 dark:bg-slate-950">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-150 dark:border-slate-800 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Ward Attendance & Live Registry</h2>
-          <p className="text-sm text-slate-500">Real-time status of hospital workforce based on wearable IoT telemetry.</p>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white">Ward Attendance & Live Registry</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-450">Real-time status of hospital workforce based on wearable IoT telemetry.</p>
         </div>
         <button 
           onClick={fetchDashboardData}
-          className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition shadow-sm"
+          className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-850 transition shadow-xs"
         >
-          <RefreshCw size={16} />
+          <RefreshCw size={14} className="text-purple-500" />
           Sync Data
         </button>
       </div>
 
+      {/* Notice Banner */}
+      <div className="rounded-xl border border-purple-200/65 dark:border-purple-900/60 bg-purple-50/50 dark:bg-purple-950/20 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="text-xs text-purple-900 dark:text-purple-200 font-semibold leading-relaxed text-left">
+          🚀 Notice: Wearable IoT biosensors streaming live telemetry. Machine learning models actively calculating fatigue risk levels and optimizing workforce roster replacements.
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <button onClick={() => onNavigateToTab('Duty Allotment')} className="rounded-lg bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-800 px-3.5 py-1.5 text-[10px] font-black text-purple-700 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 transition shadow-xs uppercase">
+            Roster Optimizer
+          </button>
+          <button onClick={() => onNavigateToTab('Shift History')} className="rounded-lg bg-gradient-to-r from-purple-500 to-indigo-600 px-3.5 py-1.5 text-[10px] font-black text-white hover:from-purple-600 hover:to-indigo-750 transition shadow-sm uppercase">
+            Clinician Audit Log
+          </button>
+        </div>
+      </div>
+
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">Staff Registry</span>
-            <div className="rounded-lg bg-slate-100 p-2 text-slate-600"><Users size={20} /></div>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Card 1: High Fatigue Alarms */}
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 dark:from-rose-500 dark:to-pink-650 p-6 text-white shadow-sm hover:shadow-md transition duration-200 text-left">
+          {/* Overlapping circle overlays */}
+          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
+          <div className="absolute -right-2 -bottom-6 h-24 w-24 rounded-full bg-white/15" />
+          
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-white/80">High Fatigue Alerts (&gt;75)</span>
+            <AlertTriangle size={20} className="text-white/80" />
           </div>
-          <div className="mt-4">
-            <h3 className="text-2xl font-bold text-slate-900">{kpis.total_nurses}</h3>
-            <p className="text-xs text-slate-400 mt-1">Total registered nurses</p>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">Active On-Site</span>
-            <div className="rounded-lg bg-sky-50 p-2 text-sky-600"><CheckCircle size={20} /></div>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-2xl font-bold text-slate-950">{kpis.active_nurses}</h3>
-            <p className="text-xs text-sky-600 mt-1">Nurses active / on break</p>
+          <div className="mt-6 relative z-10">
+            <h3 className="text-3xl font-black">{kpis.high_fatigue_nurses}</h3>
+            <p className="text-[10px] font-bold text-white/90 mt-2 uppercase tracking-wide">Immediate swaps recommended</p>
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm border-l-rose-500 border-l-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">High Fatigue (&gt;75)</span>
-            <div className="rounded-lg bg-rose-50 p-2 text-rose-600"><AlertTriangle size={20} /></div>
+        {/* Card 2: Active Roster Presence */}
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-blue-500 dark:to-indigo-650 p-6 text-white shadow-sm hover:shadow-md transition duration-200 text-left">
+          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
+          <div className="absolute -right-2 -bottom-6 h-24 w-24 rounded-full bg-white/15" />
+          
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-white/80">Active On-Site Clinicians</span>
+            <Activity size={20} className="text-white/80" />
           </div>
-          <div className="mt-4">
-            <h3 className="text-2xl font-bold text-rose-600">{kpis.high_fatigue_nurses}</h3>
-            <p className="text-xs text-rose-500 mt-1">Immediate relief required</p>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">Available Swaps</span>
-            <div className="rounded-lg bg-teal-50 p-2 text-teal-600"><UserPlus size={20} /></div>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-2xl font-bold text-slate-900">{kpis.available_replacements}</h3>
-            <p className="text-xs text-teal-600 mt-1">Nurses with fatigue &lt; 40</p>
+          <div className="mt-6 relative z-10">
+            <h3 className="text-3xl font-black">{kpis.active_nurses}</h3>
+            <p className="text-[10px] font-bold text-white/90 mt-2 uppercase tracking-wide">Roster Capacity Coverage: {kpis.shift_coverage_pct}%</p>
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">Shift Coverage</span>
-            <div className="rounded-lg bg-indigo-50 p-2 text-indigo-600"><Activity size={20} /></div>
+        {/* Card 3: Available Swaps pool */}
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-teal-400 to-emerald-500 dark:from-teal-500 dark:to-emerald-650 p-6 text-white shadow-sm hover:shadow-md transition duration-200 text-left">
+          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
+          <div className="absolute -right-2 -bottom-6 h-24 w-24 rounded-full bg-white/15" />
+          
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-white/80">Available Standby Swaps</span>
+            <Users size={20} className="text-white/80" />
           </div>
-          <div className="mt-4">
-            <h3 className="text-2xl font-bold text-slate-900">{kpis.shift_coverage_pct}%</h3>
-            <p className="text-xs text-slate-400 mt-1">Current staff capacity</p>
+          <div className="mt-6 relative z-10">
+            <h3 className="text-3xl font-black">{kpis.available_replacements}</h3>
+            <p className="text-[10px] font-bold text-white/90 mt-2 uppercase tracking-wide">Clinicians with Fatigue &lt; 40% (Total Registered: {kpis.total_nurses})</p>
           </div>
         </div>
       </div>
@@ -231,26 +234,32 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
       {chartData && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Department presence bar chart */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
-            <h4 className="text-sm font-bold text-slate-900 mb-4">Department-wise Staff Presence</h4>
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm lg:col-span-2 text-left">
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4">Department-wise Staff Presence</h4>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barChartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} />
-                  <YAxis stroke="#94a3b8" fontSize={12} />
-                  <Tooltip cursor={{ fill: '#f8fafc' }} />
-                  <Legend iconType="circle" />
-                  <Bar dataKey="Active" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Standby" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:hidden" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" className="hidden dark:block" />
+                  <XAxis dataKey="name" stroke="#64748b" fontSize={11} fontWeight="bold" />
+                  <YAxis stroke="#64748b" fontSize={11} fontWeight="bold" />
+                  <Tooltip 
+                    cursor={{ fill: '#f1f5f9' }} 
+                    contentStyle={{ borderRadius: '8px', border: '1px solid #cbd5e1' }}
+                    className="dark:hidden"
+                  />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 'bold' }} />
+                  <Bar dataKey="Active" fill="#b66dff" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Standby" fill="#94a3b8" radius={[4, 4, 0, 0]} className="dark:hidden" />
+                  <Bar dataKey="Standby" fill="#334155" radius={[4, 4, 0, 0]} className="hidden dark:block" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* Shift Distribution Pie Chart */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h4 className="text-sm font-bold text-slate-900 mb-4">Roster Allocation</h4>
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm text-left">
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4">Roster Allocation</h4>
             <div className="h-56 w-full flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -258,55 +267,59 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                     data={chartData.shift_distribution}
                     cx="50%"
                     cy="50%"
-                    innerRadius={50}
+                    innerRadius={55}
                     outerRadius={75}
-                    paddingAngle={3}
+                    paddingAngle={4}
                     dataKey="value"
                   >
-                    {chartData.shift_distribution.map((entry: any, index: number) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
+                    {chartData.shift_distribution.map((entry: any, index: number) => {
+                      const pieColors = ['#b66dff', '#4fa6ff', '#00e676'];
+                      return <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />;
+                    })}
                   </Pie>
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
             </div>
             <div className="mt-2 flex flex-col gap-2 justify-center">
-              {chartData.shift_distribution.map((entry: any, index: number) => (
-                <div key={entry.name} className="flex items-center justify-between text-xs px-2">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                    <span className="text-slate-600">{entry.name}</span>
+              {chartData.shift_distribution.map((entry: any, index: number) => {
+                const pieColors = ['#b66dff', '#4fa6ff', '#00e676'];
+                return (
+                  <div key={entry.name} className="flex items-center justify-between text-xs px-2">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: pieColors[index % pieColors.length] }}></span>
+                      <span className="text-slate-500 dark:text-slate-400 font-semibold">{entry.name}</span>
+                    </div>
+                    <span className="font-extrabold text-slate-800 dark:text-slate-200">{entry.value} Nurses</span>
                   </div>
-                  <span className="font-semibold text-slate-900">{entry.value} Nurses</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       )}
 
       {/* Roster & Search Filters */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="flex flex-col gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <h4 className="text-sm font-bold text-slate-900">Nurse Registry & Live Biosignals</h4>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+        <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-800 p-5 sm:flex-row sm:items-center sm:justify-between text-left">
+          <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Nurse Registry & Live Biosignals</h4>
           <div className="flex flex-wrap items-center gap-3">
             {/* Search Input */}
-            <div className="relative flex items-center rounded-lg border border-slate-200 px-3 py-1.5 bg-slate-50 text-slate-500 focus-within:border-sky-500 focus-within:bg-white transition">
-              <Search size={16} />
+            <div className="relative flex items-center rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-1.5 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-455 focus-within:border-purple-500 focus-within:bg-white dark:focus-within:bg-slate-900 transition">
+              <Search size={14} />
               <input
                 type="text"
                 placeholder="Search name or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-transparent pl-2 text-sm text-slate-800 focus:outline-none w-48"
+                className="bg-transparent pl-2 text-xs text-slate-700 dark:text-slate-250 focus:outline-none w-48 placeholder-slate-400 dark:placeholder-slate-550"
               />
             </div>
             {/* Department Dropdown */}
             <select
               value={selectedDept}
               onChange={(e) => setSelectedDept(e.target.value)}
-              className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm bg-white text-slate-700 shadow-sm focus:outline-none focus:border-sky-500"
+              className="rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-1.5 text-xs bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-300 shadow-sm focus:outline-none focus:border-purple-500"
             >
               <option value="All">All Departments</option>
               <option value="ICU">ICU</option>
@@ -321,55 +334,55 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-slate-150 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 <th className="px-6 py-3.5">Nurse ID</th>
                 <th className="px-6 py-3.5">Nurse Name</th>
                 <th className="px-6 py-3.5">Department</th>
                 <th className="px-6 py-3.5">Shift Duration</th>
                 <th className="px-6 py-3.5">Current Status</th>
-                <th className="px-6 py-3.5">Device MAC</th>
+                <th className="px-6 py-3.5">Device Signal</th>
                 <th className="px-6 py-3.5">Last Seen</th>
                 <th className="px-6 py-3.5 text-center">Fatigue Index</th>
                 <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-sm">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs text-slate-650 dark:text-slate-350">
               {filteredNurses.length > 0 ? (
                 filteredNurses.map((nurse) => {
                   const isHighFatigue = nurse.current_fatigue >= 75;
                   return (
-                    <tr key={nurse.id} className="hover:bg-slate-50/50 transition">
-                      <td className="px-6 py-4 font-mono text-xs font-semibold text-slate-600">
+                    <tr key={nurse.id} className="hover:bg-slate-55/30 dark:hover:bg-slate-850/30 transition">
+                      <td className="px-6 py-4 font-mono text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                         {nurse.nurse_id}
                       </td>
-                      <td className="px-6 py-4 font-medium text-slate-900">
+                      <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-200">
                         {nurse.name}
                       </td>
-                      <td className="px-6 py-4 text-slate-600">
+                      <td className="px-6 py-4 font-semibold">
                         {nurse.department}
                       </td>
-                      <td className="px-6 py-4 text-slate-600">
+                      <td className="px-6 py-4 font-medium">
                         {nurse.status === 'Offline' ? '0.0h' : `${nurse.work_hours}h`}
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${getStatusBadgeClass(nurse.status)}`}>
+                        <span className={`inline-flex items-center rounded px-2 py-0.5 text-[10px] font-bold border ${getStatusBadgeClass(nurse.status)}`}>
                           {nurse.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-xs font-mono text-slate-500">
+                      <td className="px-6 py-4">
                         {nurse.device_status === 'Active' ? (
-                          <span className="flex items-center gap-1.5 text-emerald-600">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500"></span> Connected
+                          <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-450 font-bold">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Connected
                           </span>
                         ) : nurse.device_status === 'Disconnected' ? (
-                          <span className="flex items-center gap-1.5 text-rose-500 animate-pulse">
-                            <span className="h-2 w-2 rounded-full bg-rose-500"></span> Lost Signal
+                          <span className="flex items-center gap-1.5 text-rose-500 font-bold animate-pulse">
+                            <span className="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Signal Lost
                           </span>
                         ) : (
-                          <span className="text-slate-400">Offline</span>
+                          <span className="text-slate-400 dark:text-slate-600 font-semibold">Inactive</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-xs text-slate-500">
+                      <td className="px-6 py-4 font-mono text-[10px] text-slate-500">
                         {new Date(nurse.last_seen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                       </td>
                       <td className="px-6 py-4 text-center">
@@ -381,7 +394,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                         {isHighFatigue && nurse.status === 'Active' ? (
                           <button
                             onClick={() => onSelectNurseForReplacement(nurse)}
-                            className="inline-flex items-center gap-1 rounded-md bg-rose-500 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-rose-600 transition shadow-sm"
+                            className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-purple-500 to-indigo-650 px-2.5 py-1.5 text-[10px] font-black text-white hover:from-purple-600 hover:to-indigo-750 transition shadow-sm uppercase"
                           >
                             Swap Staff
                           </button>
@@ -391,7 +404,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                               onSelectNurseForReplacement(nurse);
                               onNavigateToTab('Fatigue Monitoring');
                             }}
-                            className="text-sky-600 hover:text-sky-800 text-xs font-semibold"
+                            className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 text-xs font-bold"
                           >
                             View Bio-trend
                           </button>
@@ -402,7 +415,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                 })
               ) : (
                 <tr>
-                  <td colSpan={9} className="px-6 py-10 text-center text-slate-400">
+                  <td colSpan={9} className="px-6 py-10 text-center text-slate-400 dark:text-slate-655">
                     No nurses found matching the active filters.
                   </td>
                 </tr>
@@ -412,14 +425,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
         </div>
       </div>
       
-      {/* Visual Heatmap Grid (Attendance Heatmap) */}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h4 className="text-sm font-bold text-slate-900 mb-3">Live Presence Grid (24-Hour Roster)</h4>
+      {/* Visual Heatmap Grid */}
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm text-left">
+        <h4 className="text-sm font-bold text-slate-850 dark:text-slate-255 mb-3">Live Presence Grid (24-Hour Roster)</h4>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
           {nurses.map((nurse) => {
-            let bgClass = 'bg-slate-100 hover:bg-slate-200 border-slate-200';
+            let bgClass = 'bg-slate-105 hover:bg-slate-200 dark:bg-slate-850 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400';
             if (nurse.status === 'Active') {
-              bgClass = nurse.current_fatigue >= 75 ? 'bg-rose-500 hover:bg-rose-600 border-rose-600 text-white' : 'bg-emerald-500 hover:bg-emerald-600 border-emerald-600 text-white';
+              bgClass = nurse.current_fatigue >= 75 
+                ? 'bg-rose-500 hover:bg-rose-600 border-rose-600 text-white' 
+                : 'bg-purple-500 hover:bg-purple-650 border-purple-600 text-white shadow-xs';
             } else if (nurse.status === 'Break') {
               bgClass = 'bg-amber-400 hover:bg-amber-500 border-amber-500 text-white';
             }
@@ -427,18 +442,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
               <div 
                 key={nurse.id} 
                 title={`${nurse.name} | Fatigue: ${nurse.current_fatigue}% | Status: ${nurse.status}`}
-                className={`border rounded-lg p-2 text-center text-xs font-semibold cursor-default transition ${bgClass}`}
+                className={`border rounded-lg p-2 text-center text-[10px] font-bold cursor-default transition ${bgClass}`}
               >
                 {nurse.nurse_id}
               </div>
             );
           })}
         </div>
-        <div className="flex gap-4 mt-3 text-xs justify-center text-slate-500">
-          <div className="flex items-center gap-1.5"><span className="h-3.5 w-3.5 rounded bg-emerald-500"></span> Active (Healthy)</div>
-          <div className="flex items-center gap-1.5"><span className="h-3.5 w-3.5 rounded bg-amber-400"></span> On Break</div>
-          <div className="flex items-center gap-1.5"><span className="h-3.5 w-3.5 rounded bg-rose-500"></span> Active (Fatigued)</div>
-          <div className="flex items-center gap-1.5"><span className="h-3.5 w-3.5 rounded bg-slate-100 border"></span> Offline</div>
+        <div className="flex flex-wrap gap-4 mt-4 text-[10px] justify-center text-slate-500 dark:text-slate-450 font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-purple-500"></span> Active (Healthy)</div>
+          <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-amber-400"></span> On Break</div>
+          <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-rose-500"></span> Active (Fatigued)</div>
+          <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-slate-105 dark:bg-slate-850 border border-slate-200 dark:border-slate-800"></span> Offline</div>
         </div>
       </div>
     </div>
