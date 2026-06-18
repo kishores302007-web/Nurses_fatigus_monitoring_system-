@@ -4,8 +4,6 @@ import { Nurse } from '../types/types';
 import { 
   Users, 
   Activity, 
-  UserPlus, 
-  CheckCircle,
   AlertTriangle,
   RefreshCw,
   Search
@@ -119,16 +117,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
   });
 
   const getFatigueBadgeClass = (score: number) => {
-    if (score <= 30) return 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50';
-    if (score <= 60) return 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-900/50';
-    if (score <= 80) return 'bg-orange-50 dark:bg-orange-950/20 text-orange-700 dark:text-orange-400 border-orange-100 dark:border-orange-900/50';
-    return 'bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-900/50 animate-pulse';
+    if (score <= 30) return 'bg-emerald-50 text-emerald-700 border-emerald-100';
+    if (score <= 60) return 'bg-sky-50 text-sky-700 border-sky-100';
+    if (score <= 80) return 'bg-amber-50 text-amber-700 border-amber-100';
+    return 'bg-pink-50 text-pink-700 border-pink-100 animate-pulse';
   };
 
   const getStatusBadgeClass = (status: string) => {
-    if (status === 'Active') return 'bg-purple-50 dark:bg-purple-950/20 text-purple-700 dark:text-purple-400 border-purple-100 dark:border-purple-900/50';
-    if (status === 'Break') return 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-450 border-amber-100 dark:border-amber-900/50';
-    return 'bg-slate-100 dark:bg-slate-800 text-slate-650 dark:text-slate-400 border-slate-200 dark:border-slate-700';
+    if (status === 'Active') return 'bg-violet-50 text-violet-700 border-violet-100';
+    if (status === 'Break') return 'bg-amber-50 text-amber-700 border-amber-100';
+    return 'bg-slate-100 text-slate-600 border-slate-200';
   };
 
   if (loading) {
@@ -167,15 +165,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
       </div>
 
       {/* Notice Banner */}
-      <div className="rounded-xl border border-purple-200/65 dark:border-purple-900/60 bg-purple-50/50 dark:bg-purple-950/20 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="text-xs text-purple-900 dark:text-purple-200 font-semibold leading-relaxed text-left">
+      <div className="rounded-xl border border-violet-100 bg-violet-50/30 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="text-xs text-violet-900 font-semibold leading-relaxed text-left">
           🚀 Notice: Wearable IoT biosensors streaming live telemetry. Machine learning models actively calculating fatigue risk levels and optimizing workforce roster replacements.
         </div>
         <div className="flex gap-2 shrink-0">
-          <button onClick={() => onNavigateToTab('Duty Allotment')} className="rounded-lg bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-800 px-3.5 py-1.5 text-[10px] font-black text-purple-700 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 transition shadow-xs uppercase">
+          <button onClick={() => onNavigateToTab('Duty Allotment')} className="rounded-lg bg-white border border-violet-250 px-3.5 py-1.5 text-[10px] font-black text-violet-700 hover:bg-violet-50 transition shadow-xs uppercase">
             Roster Optimizer
           </button>
-          <button onClick={() => onNavigateToTab('Shift History')} className="rounded-lg bg-gradient-to-r from-purple-500 to-indigo-600 px-3.5 py-1.5 text-[10px] font-black text-white hover:from-purple-600 hover:to-indigo-750 transition shadow-sm uppercase">
+          <button onClick={() => onNavigateToTab('Shift History')} className="rounded-lg bg-gradient-to-r from-violet-500 to-indigo-500 px-3.5 py-1.5 text-[10px] font-black text-white hover:from-violet-600 hover:to-indigo-600 transition shadow-sm uppercase">
             Clinician Audit Log
           </button>
         </div>
@@ -184,48 +182,44 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
       {/* KPI Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {/* Card 1: High Fatigue Alarms */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 dark:from-rose-500 dark:to-pink-650 p-6 text-white shadow-sm hover:shadow-md transition duration-200 text-left">
-          {/* Overlapping circle overlays */}
-          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
-          <div className="absolute -right-2 -bottom-6 h-24 w-24 rounded-full bg-white/15" />
-          
+        <div className="relative overflow-hidden rounded-xl border border-slate-150 border-l-4 border-l-pink-400 bg-white p-6 shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 text-left">
           <div className="flex items-center justify-between relative z-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-white/80">High Fatigue Alerts (&gt;75)</span>
-            <AlertTriangle size={20} className="text-white/80" />
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">High Fatigue Alarms (&gt;75)</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-pink-50 text-pink-500">
+              <AlertTriangle size={16} />
+            </div>
           </div>
-          <div className="mt-6 relative z-10">
-            <h3 className="text-3xl font-black">{kpis.high_fatigue_nurses}</h3>
-            <p className="text-[10px] font-bold text-white/90 mt-2 uppercase tracking-wide">Immediate swaps recommended</p>
+          <div className="mt-4 relative z-10">
+            <h3 className="text-3xl font-black text-slate-900">{kpis.high_fatigue_nurses}</h3>
+            <p className="text-[10px] font-bold text-pink-600 mt-2 uppercase tracking-wide">Immediate swaps recommended</p>
           </div>
         </div>
 
         {/* Card 2: Active Roster Presence */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-blue-500 dark:to-indigo-650 p-6 text-white shadow-sm hover:shadow-md transition duration-200 text-left">
-          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
-          <div className="absolute -right-2 -bottom-6 h-24 w-24 rounded-full bg-white/15" />
-          
+        <div className="relative overflow-hidden rounded-xl border border-slate-150 border-l-4 border-l-violet-400 bg-white p-6 shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 text-left">
           <div className="flex items-center justify-between relative z-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-white/80">Active On-Site Clinicians</span>
-            <Activity size={20} className="text-white/80" />
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Active On-Site Clinicians</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-50 text-violet-600">
+              <Activity size={16} />
+            </div>
           </div>
-          <div className="mt-6 relative z-10">
-            <h3 className="text-3xl font-black">{kpis.active_nurses}</h3>
-            <p className="text-[10px] font-bold text-white/90 mt-2 uppercase tracking-wide">Roster Capacity Coverage: {kpis.shift_coverage_pct}%</p>
+          <div className="mt-4 relative z-10">
+            <h3 className="text-3xl font-black text-slate-900">{kpis.active_nurses}</h3>
+            <p className="text-[10px] font-bold text-violet-600 mt-2 uppercase tracking-wide">Roster Capacity Coverage: {kpis.shift_coverage_pct}%</p>
           </div>
         </div>
 
         {/* Card 3: Available Swaps pool */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-teal-400 to-emerald-500 dark:from-teal-500 dark:to-emerald-650 p-6 text-white shadow-sm hover:shadow-md transition duration-200 text-left">
-          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
-          <div className="absolute -right-2 -bottom-6 h-24 w-24 rounded-full bg-white/15" />
-          
+        <div className="relative overflow-hidden rounded-xl border border-slate-150 border-l-4 border-l-sky-400 bg-white p-6 shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 text-left">
           <div className="flex items-center justify-between relative z-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-white/80">Available Standby Swaps</span>
-            <Users size={20} className="text-white/80" />
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Available Standby Swaps</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 text-sky-600">
+              <Users size={16} />
+            </div>
           </div>
-          <div className="mt-6 relative z-10">
-            <h3 className="text-3xl font-black">{kpis.available_replacements}</h3>
-            <p className="text-[10px] font-bold text-white/90 mt-2 uppercase tracking-wide">Clinicians with Fatigue &lt; 40% (Total Registered: {kpis.total_nurses})</p>
+          <div className="mt-4 relative z-10">
+            <h3 className="text-3xl font-black text-slate-900">{kpis.available_replacements}</h3>
+            <p className="text-[10px] font-bold text-sky-600 mt-2 uppercase tracking-wide">Clinicians Fatigue &lt; 40% (Total: {kpis.total_nurses})</p>
           </div>
         </div>
       </div>
@@ -244,9 +238,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                   <XAxis dataKey="name" stroke="#64748b" fontSize={11} fontWeight="bold" />
                   <YAxis stroke="#64748b" fontSize={11} fontWeight="bold" />
                   <Tooltip 
-                    cursor={{ fill: '#f1f5f9' }} 
-                    contentStyle={{ borderRadius: '8px', border: '1px solid #cbd5e1' }}
-                    className="dark:hidden"
+                    cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }} 
+                    contentStyle={{ 
+                      borderRadius: '8px', 
+                      border: '1.5px solid var(--tooltip-border)', 
+                      backgroundColor: 'var(--tooltip-bg)', 
+                      color: 'var(--tooltip-text)' 
+                    }}
                   />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 'bold' }} />
                   <Bar dataKey="Active" fill="#b66dff" radius={[4, 4, 0, 0]} />
@@ -272,12 +270,19 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                     paddingAngle={4}
                     dataKey="value"
                   >
-                    {chartData.shift_distribution.map((entry: any, index: number) => {
+                    {chartData.shift_distribution.map((_: any, index: number) => {
                       const pieColors = ['#b66dff', '#4fa6ff', '#00e676'];
                       return <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />;
                     })}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{ 
+                      borderRadius: '8px', 
+                      border: '1.5px solid var(--tooltip-border)', 
+                      backgroundColor: 'var(--tooltip-bg)', 
+                      color: 'var(--tooltip-text)' 
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -394,7 +399,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                         {isHighFatigue && nurse.status === 'Active' ? (
                           <button
                             onClick={() => onSelectNurseForReplacement(nurse)}
-                            className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-purple-500 to-indigo-650 px-2.5 py-1.5 text-[10px] font-black text-white hover:from-purple-600 hover:to-indigo-750 transition shadow-sm uppercase"
+                            className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-violet-500 to-indigo-500 px-2.5 py-1.5 text-[10px] font-black text-white hover:from-violet-600 hover:to-indigo-600 transition shadow-sm uppercase"
                           >
                             Swap Staff
                           </button>
@@ -404,7 +409,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                               onSelectNurseForReplacement(nurse);
                               onNavigateToTab('Fatigue Monitoring');
                             }}
-                            className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 text-xs font-bold"
+                            className="text-violet-600 hover:text-violet-800 text-xs font-bold"
                           >
                             View Bio-trend
                           </button>

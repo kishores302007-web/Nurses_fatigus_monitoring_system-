@@ -48,22 +48,22 @@ export const Alerts: React.FC = () => {
   const getAlertIcon = (type: string) => {
     switch (type) {
       case 'Critical':
-        return <AlertOctagon className="text-rose-500" size={18} />;
+        return <AlertOctagon className="text-pink-500" size={18} />;
       case 'High':
-        return <AlertOctagon className="text-orange-500" size={18} />;
-      default:
         return <AlertOctagon className="text-amber-500" size={18} />;
+      default:
+        return <AlertOctagon className="text-sky-500" size={18} />;
     }
   };
 
   const getAlertBadgeClass = (type: string) => {
     switch (type) {
       case 'Critical':
-        return 'bg-rose-50 text-rose-700 border-rose-100';
+        return 'bg-pink-50 text-pink-700 border-pink-100';
       case 'High':
-        return 'bg-orange-50 text-orange-700 border-orange-100';
-      default:
         return 'bg-amber-50 text-amber-700 border-amber-100';
+      default:
+        return 'bg-sky-50 text-sky-700 border-sky-100';
     }
   };
 
@@ -75,9 +75,9 @@ export const Alerts: React.FC = () => {
   });
 
   return (
-    <div className="h-full space-y-6 overflow-y-auto px-8 py-6">
+    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 text-slate-800">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">Alert Dispatch Center</h2>
           <p className="text-sm text-slate-500">Real-time alert dispatch log tracking Low, High, and Critical thresholds.</p>
@@ -86,19 +86,19 @@ export const Alerts: React.FC = () => {
           onClick={fetchAlerts}
           className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm"
         >
-          <RefreshCw size={14} /> Refresh
+          <RefreshCw size={14} className="text-violet-500" /> Refresh
         </button>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
         {['All', 'Active', 'Resolved', 'Critical', 'High', 'Low'].map(t => (
           <button
             key={t}
             onClick={() => setFilterType(t)}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition ${
               filterType === t 
-                ? 'bg-sky-500 border-sky-600 text-white shadow-sm' 
+                ? 'bg-violet-600 border-violet-750 text-white shadow-sm hover:bg-violet-700' 
                 : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
@@ -111,34 +111,34 @@ export const Alerts: React.FC = () => {
       <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-20 text-center text-sm font-semibold text-slate-500 flex flex-col items-center gap-2">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-sky-500 border-t-transparent"></div>
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-violet-500 border-t-transparent"></div>
             Loading active alarms...
           </div>
         ) : filteredAlerts.length > 0 ? (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-150">
             {filteredAlerts.map((alert) => (
               <div 
                 key={alert.id}
                 className={`p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition ${
-                  alert.resolved ? 'bg-slate-50/20' : 'bg-rose-50/5'
+                  alert.resolved ? 'bg-slate-50/20' : 'bg-pink-50/10'
                 }`}
               >
                 {/* Left: Nurse and Alarm Score info */}
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3 text-left">
                   <div className="mt-0.5 flex-shrink-0">
                     {getAlertIcon(alert.alert_type)}
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-slate-900 text-sm">{alert.nurse_name}</span>
                       <span className="text-[10px] font-mono text-slate-400 font-medium">({alert.nurse_code})</span>
-                      <span className={`rounded px-1.5 py-0.5 text-[10px] font-extrabold uppercase ${getAlertBadgeClass(alert.alert_type)}`}>
+                      <span className={`rounded border px-1.5 py-0.5 text-[10px] font-extrabold uppercase ${getAlertBadgeClass(alert.alert_type)}`}>
                         {alert.alert_type}
                       </span>
                     </div>
                     <p className="text-xs text-slate-600 mt-1 font-medium">{alert.description}</p>
                     
-                    <div className="mt-2 flex items-center gap-3 text-[10px] text-slate-400">
+                    <div className="mt-2 flex items-center gap-3 text-[10px] text-slate-400 flex-wrap">
                       <span className="flex items-center gap-1"><Clock size={11} /> {new Date(alert.timestamp).toLocaleTimeString()} ({new Date(alert.timestamp).toLocaleDateString()})</span>
                       <span>•</span>
                       <span className="font-semibold text-slate-600">Fatigue Score: {alert.fatigue_score}%</span>
@@ -147,7 +147,7 @@ export const Alerts: React.FC = () => {
                 </div>
 
                 {/* Center: Notification Dispatch Indicators */}
-                <div className="flex items-center gap-4 text-xs font-semibold">
+                <div className="flex items-center gap-4 text-xs font-semibold text-left">
                   <div className="flex flex-col gap-1.5">
                     <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wide">Channels Sent</span>
                     <div className="flex items-center gap-3 text-slate-500">
@@ -180,7 +180,7 @@ export const Alerts: React.FC = () => {
                   ) : (
                     <button
                       onClick={() => handleResolveAlert(alert.id)}
-                      className="rounded-lg bg-slate-800 hover:bg-slate-900 px-3 py-1.5 text-xs font-bold text-white transition shadow-sm"
+                      className="rounded-lg bg-violet-50 hover:bg-violet-100 border border-violet-200 px-3 py-1.5 text-xs font-bold text-violet-700 transition shadow-xs"
                     >
                       Acknowledge & Dismiss
                     </button>
@@ -199,4 +199,5 @@ export const Alerts: React.FC = () => {
     </div>
   );
 };
+
 export default Alerts;

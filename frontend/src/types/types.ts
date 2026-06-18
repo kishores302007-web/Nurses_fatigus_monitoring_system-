@@ -10,6 +10,7 @@ export interface Nurse {
   device_status: 'Active' | 'Inactive' | 'Disconnected' | 'None';
   work_hours: number;
   last_seen: string;
+  max_shift_hours?: number;
 }
 
 export interface Telemetry {
@@ -109,4 +110,12 @@ export interface ShapValue {
   feature: string;
   value: number;
   description: string;
+}
+
+export interface DeviceResponse {
+  id: string;
+  mac_address: string;
+  status: string;
+  assigned_nurse_name: string;
+  last_seen: string;
 }

@@ -6,8 +6,6 @@ import {
   Activity, 
   Flame, 
   Thermometer, 
-  Eye, 
-  ChevronRight,
   TrendingUp,
   BrainCircuit
 } from 'lucide-react';
@@ -127,30 +125,30 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
     if (score <= 30) return 'stroke-emerald-500 text-emerald-600';
     if (score <= 60) return 'stroke-amber-500 text-amber-600';
     if (score <= 80) return 'stroke-orange-500 text-orange-600';
-    return 'stroke-rose-500 text-rose-600';
+    return 'stroke-pink-500 text-pink-600';
   };
 
   const getDialBg = (score: number) => {
-    if (score <= 30) return 'bg-emerald-50 text-emerald-700';
-    if (score <= 60) return 'bg-amber-50 text-amber-700';
-    if (score <= 80) return 'bg-orange-50 text-orange-700';
-    return 'bg-rose-50 text-rose-700';
+    if (score <= 30) return 'bg-emerald-50 text-emerald-700 border border-emerald-100';
+    if (score <= 60) return 'bg-amber-50 text-amber-700 border border-amber-100';
+    if (score <= 80) return 'bg-orange-50 text-orange-700 border border-orange-100';
+    return 'bg-pink-50 text-pink-700 border border-pink-100 animate-pulse';
   };
 
   return (
-    <div className="h-full space-y-6 overflow-y-auto px-8 py-6">
+    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 text-slate-800">
       {/* Header with Selector */}
-      <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-slate-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Real-Time Telemetry & Forecasts</h2>
-          <p className="text-sm text-slate-500">Live streams of MAX30102, GSR, MLX90614, and MPU6050 bio-signals.</p>
+          <h2 className="text-2xl font-black text-slate-900">Real-Time Telemetry & Forecasts</h2>
+          <p className="text-xs text-slate-500">Live streams of MAX30102, GSR, MLX90614, and MPU6050 bio-signals.</p>
         </div>
         <div className="flex items-center gap-3">
-          <label className="text-sm font-semibold text-slate-500 uppercase">Select Nurse:</label>
+          <label className="text-xs font-bold text-slate-400 uppercase">Select Nurse:</label>
           <select
             value={selectedNurse?.id || ''}
             onChange={handleNurseChange}
-            className="rounded-lg border border-slate-200 px-4 py-2 text-sm bg-white text-slate-700 shadow-sm focus:outline-none focus:border-sky-500 font-medium"
+            className="rounded-lg border border-slate-200 px-4 py-2 text-xs bg-white text-slate-700 shadow-sm focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 font-bold cursor-pointer"
           >
             {nurses.map((n) => (
               <option key={n.id} value={n.id}>
@@ -167,10 +165,10 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
           <div className="space-y-6 lg:col-span-1">
             {/* Risk Gauge */}
             <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col items-center justify-center relative overflow-hidden">
-              <div className="absolute top-4 left-4 flex items-center gap-1 text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full uppercase">
+              <div className="absolute top-4 left-4 flex items-center gap-1 text-[10px] font-bold text-violet-600 bg-violet-50 border border-violet-100 px-2 py-0.5 rounded-full uppercase">
                 <BrainCircuit size={12} /> ML Model Analysis
               </div>
-              <h4 className="text-sm font-bold text-slate-900 self-start mb-6">Fatigue Index Status</h4>
+              <h4 className="text-sm font-bold text-slate-900 self-start mb-6 mt-2">Fatigue Index Status</h4>
               
               {/* Circular Dial */}
               <div className="relative h-44 w-44">
@@ -214,21 +212,21 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
 
             {/* AI Predictions */}
             <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h4 className="text-sm font-bold text-slate-900 mb-5 flex items-center gap-1.5">
-                <TrendingUp size={16} className="text-sky-500" />
+              <h4 className="text-sm font-bold text-slate-900 mb-5 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <TrendingUp size={16} className="text-violet-500" />
                 AI Fatigue Forecast (XGBoost + LSTM)
               </h4>
-              <div className="space-y-4">
+              <div className="space-y-4 text-left">
                 <div>
                   <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                     <span>Next 2 Hours Forecast</span>
-                    <span className={predictions.predicted_2h > 75 ? 'text-rose-500 font-bold' : 'text-slate-800'}>
+                    <span className={predictions.predicted_2h > 75 ? 'text-pink-600 font-bold' : 'text-slate-800'}>
                       {predictions.predicted_2h}%
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                     <div 
-                      className={`h-full rounded-full ${predictions.predicted_2h > 75 ? 'bg-rose-500' : 'bg-sky-400'} transition-all duration-300`} 
+                      className={`h-full rounded-full ${predictions.predicted_2h > 75 ? 'bg-pink-500' : 'bg-violet-500'} transition-all duration-300`} 
                       style={{ width: `${predictions.predicted_2h}%` }}
                     ></div>
                   </div>
@@ -237,13 +235,13 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
                 <div>
                   <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                     <span>Next 4 Hours Forecast</span>
-                    <span className={predictions.predicted_4h > 75 ? 'text-rose-500 font-bold' : 'text-slate-800'}>
+                    <span className={predictions.predicted_4h > 75 ? 'text-pink-600 font-bold' : 'text-slate-800'}>
                       {predictions.predicted_4h}%
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                     <div 
-                      className={`h-full rounded-full ${predictions.predicted_4h > 75 ? 'bg-rose-500' : 'bg-sky-400'} transition-all duration-300`} 
+                      className={`h-full rounded-full ${predictions.predicted_4h > 75 ? 'bg-pink-500' : 'bg-violet-500'} transition-all duration-300`} 
                       style={{ width: `${predictions.predicted_4h}%` }}
                     ></div>
                   </div>
@@ -252,21 +250,21 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
                 <div>
                   <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                     <span>End of Shift Forecast</span>
-                    <span className={predictions.predicted_end_shift > 75 ? 'text-rose-500 font-bold' : 'text-slate-800'}>
+                    <span className={predictions.predicted_end_shift > 75 ? 'text-pink-600 font-bold' : 'text-slate-800'}>
                       {predictions.predicted_end_shift}%
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                     <div 
-                      className={`h-full rounded-full ${predictions.predicted_end_shift > 75 ? 'bg-rose-500' : 'bg-sky-400'} transition-all duration-300`} 
+                      className={`h-full rounded-full ${predictions.predicted_end_shift > 75 ? 'bg-pink-500' : 'bg-violet-500'} transition-all duration-300`} 
                       style={{ width: `${predictions.predicted_end_shift}%` }}
                     ></div>
                   </div>
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[10px] text-slate-400">
+              <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[10px] text-slate-400 font-bold uppercase">
                 <span>Model Confidence Index</span>
-                <span className="font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full">94.8% (XGB)</span>
+                <span className="font-bold text-violet-600 bg-violet-50 border border-violet-100 px-2 py-0.5 rounded-full">94.8% (XGB)</span>
               </div>
             </div>
           </div>
@@ -279,31 +277,31 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
                 <div className="flex items-center gap-1.5 rounded-lg bg-slate-100 p-1">
                   <button 
                     onClick={() => setActiveTab('all')}
-                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'all' ? 'bg-white text-slate-900 shadow-xs border border-slate-200/50' : 'text-slate-500 hover:text-slate-900'}`}
                   >
                     All
                   </button>
                   <button 
                     onClick={() => setActiveTab('hr')}
-                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'hr' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'hr' ? 'bg-white text-slate-900 shadow-xs border border-slate-200/50' : 'text-slate-500 hover:text-slate-900'}`}
                   >
                     HR
                   </button>
                   <button 
                     onClick={() => setActiveTab('hrv')}
-                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'hrv' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'hrv' ? 'bg-white text-slate-900 shadow-xs border border-slate-200/50' : 'text-slate-500 hover:text-slate-900'}`}
                   >
                     HRV
                   </button>
                   <button 
                     onClick={() => setActiveTab('gsr')}
-                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'gsr' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'gsr' ? 'bg-white text-slate-900 shadow-xs border border-slate-200/50' : 'text-slate-500 hover:text-slate-900'}`}
                   >
                     GSR
                   </button>
                   <button 
                     onClick={() => setActiveTab('temp')}
-                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'temp' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold ${activeTab === 'temp' ? 'bg-white text-slate-900 shadow-xs border border-slate-200/50' : 'text-slate-500 hover:text-slate-900'}`}
                   >
                     Temp
                   </button>
@@ -313,18 +311,18 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
               {/* Responsive Line Charts */}
               <div className="mt-6 space-y-4">
                 {(activeTab === 'all' || activeTab === 'hr') && (
-                  <div className="rounded-lg border border-slate-100 bg-slate-50/50 p-4">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-rose-600 mb-2">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-pink-600 mb-2">
                       <Heart size={14} fill="currentColor" /> Heart Rate Trend (MAX30102)
                     </div>
-                    <div className="h-36 w-full">
+                    <div className="h-36 w-full text-left">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={history}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                          <XAxis dataKey="timestamp" stroke="#94a3b8" fontSize={10} />
-                          <YAxis stroke="#94a3b8" fontSize={10} domain={['dataMin - 5', 'dataMax + 5']} />
+                          <XAxis dataKey="timestamp" stroke="#64748b" fontSize={10} />
+                          <YAxis stroke="#64748b" fontSize={10} domain={['dataMin - 5', 'dataMax + 5']} />
                           <Tooltip />
-                          <Line type="monotone" dataKey="heart_rate" stroke="#f43f5e" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+                          <Line type="monotone" dataKey="heart_rate" stroke="#ec4899" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
@@ -332,16 +330,16 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
                 )}
 
                 {(activeTab === 'all' || activeTab === 'hrv') && (
-                  <div className="rounded-lg border border-slate-100 bg-slate-50/50 p-4">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-sky-600 mb-2">
                       <Activity size={14} /> Autonomic Heart Rate Variability (HRV Index)
                     </div>
-                    <div className="h-36 w-full">
+                    <div className="h-36 w-full text-left">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={history}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                          <XAxis dataKey="timestamp" stroke="#94a3b8" fontSize={10} />
-                          <YAxis stroke="#94a3b8" fontSize={10} domain={['dataMin - 10', 'dataMax + 10']} />
+                          <XAxis dataKey="timestamp" stroke="#64748b" fontSize={10} />
+                          <YAxis stroke="#64748b" fontSize={10} domain={['dataMin - 10', 'dataMax + 10']} />
                           <Tooltip />
                           <Line type="monotone" dataKey="hrv" stroke="#0ea5e9" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
                         </LineChart>
@@ -351,16 +349,16 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
                 )}
 
                 {(activeTab === 'all' || activeTab === 'gsr') && (
-                  <div className="rounded-lg border border-slate-100 bg-slate-50/50 p-4">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 mb-2">
                       <Flame size={14} /> Galvanic Skin Stress Index (GSR Voltage)
                     </div>
-                    <div className="h-36 w-full">
+                    <div className="h-36 w-full text-left">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={history}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                          <XAxis dataKey="timestamp" stroke="#94a3b8" fontSize={10} />
-                          <YAxis stroke="#94a3b8" fontSize={10} domain={[0.0, 3.3]} />
+                          <XAxis dataKey="timestamp" stroke="#64748b" fontSize={10} />
+                          <YAxis stroke="#64748b" fontSize={10} domain={[0.0, 3.3]} />
                           <Tooltip />
                           <Line type="monotone" dataKey="gsr_voltage" stroke="#d97706" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
                         </LineChart>
@@ -370,16 +368,16 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
                 )}
 
                 {(activeTab === 'all' || activeTab === 'temp') && (
-                  <div className="rounded-lg border border-slate-100 bg-slate-50/50 p-4">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-teal-600 mb-2">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-teal-605 mb-2">
                       <Thermometer size={14} /> Peripheral Temperature Trend (MLX90614)
                     </div>
-                    <div className="h-36 w-full">
+                    <div className="h-36 w-full text-left">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={history}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                          <XAxis dataKey="timestamp" stroke="#94a3b8" fontSize={10} />
-                          <YAxis stroke="#94a3b8" fontSize={10} domain={['dataMin - 0.5', 'dataMax + 0.5']} />
+                          <XAxis dataKey="timestamp" stroke="#64748b" fontSize={10} />
+                          <YAxis stroke="#64748b" fontSize={10} domain={['dataMin - 0.5', 'dataMax + 0.5']} />
                           <Tooltip />
                           <Line type="monotone" dataKey="skin_temp" stroke="#0d9488" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
                         </LineChart>
@@ -391,9 +389,9 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
             </div>
 
             {/* Explainable AI (SHAP Weights) */}
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm text-left">
               <h4 className="text-sm font-bold text-slate-900 mb-1.5 flex items-center gap-1.5">
-                <BrainCircuit size={16} className="text-teal-600" /> Explainable AI Model Coefficients (SHAP Contributions)
+                <BrainCircuit size={16} className="text-violet-500" /> Explainable AI Model Coefficients (SHAP Contributions)
               </h4>
               <p className="text-xs text-slate-500 mb-4">
                 Real-time feature weights showing exactly how sensors impact the nurse's current fatigue calculation.
@@ -410,13 +408,13 @@ export const FatigueMonitoring: React.FC<FatigueMonitoringProps> = ({ selectedNu
                       </div>
                       <div className="flex-1 flex items-center gap-2">
                         {/* Bar visually showing impact */}
-                        <div className="flex-1 h-3 rounded-full bg-slate-50 border overflow-hidden flex justify-end">
+                        <div className="flex-1 h-3 rounded-full bg-slate-50 border border-slate-100 overflow-hidden flex justify-end">
                           <div 
-                            className={`h-full ${isPositive ? 'bg-rose-400 self-start' : 'bg-emerald-400'}`}
+                            className={`h-full ${isPositive ? 'bg-pink-400 self-start' : 'bg-emerald-400'}`}
                             style={{ width: `${pct}%`, marginLeft: isPositive ? 'auto' : '0', marginRight: isPositive ? '0' : 'auto' }}
                           ></div>
                         </div>
-                        <span className={`w-14 text-right font-bold font-mono ${isPositive ? 'text-rose-600' : 'text-emerald-600'}`}>
+                        <span className={`w-14 text-right font-bold font-mono ${isPositive ? 'text-pink-600' : 'text-emerald-600'}`}>
                           {isPositive ? '+' : ''}{shap.value}
                         </span>
                       </div>

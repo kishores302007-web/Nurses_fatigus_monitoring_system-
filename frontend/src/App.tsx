@@ -5,7 +5,6 @@ import { Dashboard } from './components/Dashboard';
 import { FatigueMonitoring } from './components/FatigueMonitoring';
 import { ReplacementEngine } from './components/ReplacementEngine';
 import { ShiftOptimization } from './components/ShiftOptimization';
-import { Analytics } from './components/Analytics';
 import { Alerts } from './components/Alerts';
 import { AdminPanel } from './components/AdminPanel';
 import { DutyAllotment } from './components/DutyAllotment';
@@ -28,7 +27,7 @@ import {
 
 export const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
+  const [, setToken] = useState<string | null>(null);
   const [username, setUsername] = useState('');
   
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
@@ -40,13 +39,8 @@ export const App: React.FC = () => {
 
   // Handle Light/Dark theme initialization
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme as 'light' | 'dark');
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    setTheme('light');
+    document.documentElement.classList.remove('dark');
   }, []);
 
   const toggleTheme = () => {
@@ -177,8 +171,6 @@ export const App: React.FC = () => {
         );
       case 'Shift Optimization':
         return <ShiftOptimization />;
-      case 'Analytics':
-        return <Analytics />;
       case 'Alerts':
         return <Alerts />;
       case 'Duty Allotment':
@@ -195,53 +187,53 @@ export const App: React.FC = () => {
   // 1. Unauthenticated Login Layout
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-sky-50 via-slate-50 to-teal-50 px-4">
-        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white/80 p-8 shadow-xl backdrop-blur-md">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-sky-50 via-slate-50 to-teal-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 px-4">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-8 shadow-xl backdrop-blur-md">
           <div className="flex flex-col items-center gap-2 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500 text-white shadow-md">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600 text-white shadow-md">
               <Activity size={24} />
             </div>
-            <h1 className="mt-4 text-xl font-bold text-slate-900 leading-none">
+            <h1 className="mt-4 text-xl font-bold text-slate-900 dark:text-white leading-none">
               Clinical Sign In
             </h1>
-            <p className="text-xs text-slate-500 font-medium mt-1">Nurse Fatigue Intelligence & Workforce Optimization Platform</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Nurse Fatigue Intelligence & Workforce Optimization Platform</p>
           </div>
 
           {loginError && (
-            <div className="mt-6 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-700 animate-in fade-in slide-in-from-top-1 duration-150">
+            <div className="mt-6 rounded-lg border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/20 p-3 text-xs font-semibold text-rose-700 dark:text-rose-450 animate-in fade-in slide-in-from-top-1 duration-150 text-left">
               {loginError}
             </div>
           )}
 
           <form onSubmit={handleLogin} className="mt-6 space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Account Username</label>
+            <div className="space-y-1.5 text-left">
+              <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Account Username</label>
               <input
                 type="text"
                 placeholder="Username (e.g. admin1)"
                 required
                 value={loginForm.username}
                 onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
-                className="w-full rounded-lg border border-slate-200 p-2.5 text-xs bg-slate-50 focus:outline-none focus:border-sky-500 focus:bg-white transition"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-800 p-2.5 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 transition"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-semibold">Security Password</label>
+            <div className="space-y-1.5 text-left">
+              <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">Security Password</label>
               <input
                 type="password"
                 placeholder="Password"
                 required
                 value={loginForm.password}
                 onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                className="w-full rounded-lg border border-slate-200 p-2.5 text-xs bg-slate-50 focus:outline-none focus:border-sky-500 focus:bg-white transition"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-800 p-2.5 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 transition"
               />
             </div>
 
             <button
               type="submit"
               disabled={loggingIn}
-              className="w-full rounded-lg bg-sky-500 hover:bg-sky-600 py-2.5 text-xs font-bold text-white transition shadow-sm flex items-center justify-center gap-1.5"
+              className="w-full rounded-lg bg-gradient-to-r from-purple-500 to-indigo-650 hover:from-purple-600 hover:to-indigo-750 py-2.5 text-xs font-bold text-white transition shadow-sm flex items-center justify-center gap-1.5 uppercase"
             >
               {loggingIn ? (
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -259,7 +251,7 @@ export const App: React.FC = () => {
 
   // 2. Main Authenticated Console Layout
   return (
-    <div className="flex h-screen w-screen bg-slate-50 dark:bg-slate-950 overflow-hidden text-slate-850 dark:text-slate-100">
+    <div className="flex h-screen w-screen bg-slate-50 dark:bg-slate-950 overflow-hidden text-slate-800 dark:text-slate-100">
       {/* Sidebar navigation */}
       <Sidebar 
         currentTab={currentTab}

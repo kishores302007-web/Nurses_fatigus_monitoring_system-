@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Nurse, ReplacementCandidate } from '../types/types';
 import { 
-  Users, 
   UserCheck, 
   FileText, 
   HelpCircle,
@@ -126,15 +125,15 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-emerald-600 bg-emerald-50';
-    if (score >= 60) return 'text-sky-600 bg-sky-50';
-    return 'text-slate-600 bg-slate-50';
+    if (score >= 80) return 'text-emerald-700 bg-emerald-50 border-emerald-100';
+    if (score >= 60) return 'text-violet-700 bg-violet-50 border-violet-100';
+    return 'text-slate-650 bg-slate-50 border-slate-200';
   };
 
   return (
-    <div className="h-full space-y-6 overflow-y-auto px-8 py-6">
+    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 text-slate-800">
       {/* Header */}
-      <div className="border-b border-slate-100 pb-4">
+      <div className="border-b border-slate-200 pb-4">
         <h2 className="text-2xl font-bold text-slate-900">Smart Replacement Engine</h2>
         <p className="text-sm text-slate-500">Automated candidate matching when staff fatigue levels exceed clinical thresholds.</p>
       </div>
@@ -142,8 +141,8 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Fatigued Staff Queue */}
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-1.5">
-            <AlertCircle size={16} className="text-rose-500" />
+          <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+            <AlertCircle size={16} className="text-pink-500" />
             Fatigued Staff Queue
           </h4>
           <div className="space-y-3">
@@ -157,17 +156,17 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
                     onClick={() => handleNurseSelect(nurse)}
                     className={`w-full flex items-center justify-between rounded-lg border p-4 text-left transition ${
                       isSelected 
-                        ? 'border-sky-500 bg-sky-50/50 shadow-sm' 
-                        : isCritical ? 'border-rose-100 hover:bg-slate-50 bg-rose-50/10' : 'border-slate-100 hover:bg-slate-50'
+                        ? 'border-violet-500 bg-violet-50/50 shadow-xs' 
+                        : isCritical ? 'border-pink-200 hover:bg-slate-50 bg-pink-50/20' : 'border-slate-100 hover:bg-slate-50'
                     }`}
                   >
                     <div>
-                      <h5 className="font-semibold text-slate-950 text-sm">{nurse.name}</h5>
+                      <h5 className="font-semibold text-slate-900 text-sm">{nurse.name}</h5>
                       <span className="text-xs text-slate-500 font-medium">{nurse.department} • {nurse.skill_category}</span>
                     </div>
-                    <div className="text-right">
-                      <span className={`inline-block rounded px-2 py-0.5 text-xs font-bold ${
-                        isCritical ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'
+                    <div className="text-right text-xs">
+                      <span className={`inline-block rounded px-2 py-0.5 font-bold ${
+                        isCritical ? 'bg-pink-100 text-pink-700' : 'bg-amber-100 text-amber-700'
                       }`}>
                         {nurse.current_fatigue}%
                       </span>
@@ -186,13 +185,13 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
 
         {/* Candidate Matching List */}
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
             <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-              <Sparkles size={16} className="text-sky-500" />
+              <Sparkles size={16} className="text-violet-500" />
               Roster Replacement Candidates
             </h4>
             {selectedNurse && (
-              <span className="text-xs text-sky-600 bg-sky-50 font-bold px-2 py-0.5 rounded-full uppercase">
+              <span className="text-xs text-violet-750 bg-violet-50 border border-violet-100 font-bold px-2 py-0.5 rounded-full uppercase">
                 Matching: {selectedNurse.skill_category}
               </span>
             )}
@@ -201,7 +200,7 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
           {selectedNurse ? (
             loadingCandidates ? (
               <div className="py-16 text-center text-sm font-semibold text-slate-500 flex flex-col items-center gap-2">
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-sky-500 border-t-transparent"></div>
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-violet-500 border-t-transparent"></div>
                 Evaluating replacement criteria...
               </div>
             ) : candidates.length > 0 ? (
@@ -209,7 +208,7 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                      <tr className="border-b border-slate-200 bg-slate-50/50 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                         <th className="px-4 py-2">Rank</th>
                         <th className="px-4 py-2">Candidate</th>
                         <th className="px-4 py-2">Department</th>
@@ -219,7 +218,7 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
                         <th className="px-4 py-2 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-slate-100 text-xs text-slate-600">
                       {candidates.map((c) => (
                         <tr key={c.id} className="hover:bg-slate-50/50 transition">
                           <td className="px-4 py-3 font-bold text-slate-500">
@@ -233,7 +232,7 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
                             {c.department}
                           </td>
                           <td className="px-4 py-3 text-center">
-                            <span className="inline-block rounded bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-xs font-bold">
+                            <span className="inline-block rounded bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-xs font-bold border border-emerald-100">
                               {c.fatigue_score}%
                             </span>
                           </td>
@@ -241,14 +240,14 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
                             {c.current_work_hours}h
                           </td>
                           <td className="px-4 py-3 text-center">
-                            <span className={`inline-block rounded px-2 py-0.5 text-xs font-extrabold ${getScoreColor(c.availability_score)}`}>
+                            <span className={`inline-block rounded px-2 py-0.5 text-xs font-extrabold border ${getScoreColor(c.availability_score)}`}>
                               {c.availability_score}
                             </span>
                           </td>
                           <td className="px-4 py-3 text-right">
                             <button
                               onClick={() => handleOpenSwapModal(c)}
-                              className="rounded bg-sky-500 px-2.5 py-1 text-xs font-bold text-white hover:bg-sky-600 transition shadow-sm"
+                              className="rounded-lg bg-violet-600 hover:bg-violet-750 px-2.5 py-1.5 text-[10px] font-bold text-white uppercase transition shadow-sm"
                             >
                               Assign Swap
                             </button>
@@ -276,21 +275,21 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
 
       {/* Confirmation Modal */}
       {isModalOpen && selectedCandidate && selectedNurse && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl animate-in fade-in zoom-in-95 duration-200">
             <h3 className="text-base font-bold text-slate-950 flex items-center gap-1.5">
-              <UserCheck size={20} className="text-sky-500" />
+              <UserCheck size={20} className="text-violet-600" />
               Confirm Shift Replacement Swap
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 mt-1 text-left">
               This action modifies the roster in real time. Please review the details before committing.
             </p>
 
             {/* Swap comparison */}
-            <div className="my-5 rounded-lg border border-slate-100 bg-slate-50 p-4 space-y-3">
+            <div className="my-5 rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-3">
               <div className="flex justify-between text-xs">
                 <span className="text-slate-500">Fatigued Nurse:</span>
-                <span className="font-bold text-rose-600">{selectedNurse.name} ({selectedNurse.current_fatigue}%)</span>
+                <span className="font-bold text-pink-600">{selectedNurse.name} ({selectedNurse.current_fatigue}%)</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-slate-500">Replacement Nurse:</span>
@@ -307,14 +306,14 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
             </div>
 
             {/* Justification input */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 text-left">
               <label className="text-xs font-semibold text-slate-500 uppercase flex items-center gap-1">
                 <FileText size={12} /> Justification SOP Log:
               </label>
               <textarea
                 value={justification}
                 onChange={(e) => setJustification(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 p-2.5 text-xs text-slate-800 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-800 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
                 rows={3}
               />
             </div>
@@ -331,7 +330,7 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
               <button
                 onClick={handleExecuteSwap}
                 disabled={submitting}
-                className="rounded-lg bg-sky-500 px-4 py-2 text-xs font-bold text-white hover:bg-sky-600 transition shadow-sm flex items-center gap-1.5"
+                className="rounded-lg bg-violet-600 hover:bg-violet-750 px-4 py-2 text-xs font-bold text-white hover:bg-sky-650 transition shadow-sm flex items-center gap-1.5 uppercase"
               >
                 {submitting ? (
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -344,4 +343,5 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
     </div>
   );
 };
+
 export default ReplacementEngine;

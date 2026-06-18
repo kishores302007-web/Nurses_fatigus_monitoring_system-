@@ -54,7 +54,7 @@ export const ShiftOptimization: React.FC = () => {
     return (
       <div className="flex h-full items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-500 border-t-transparent"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-500 border-t-transparent"></div>
           <p className="text-sm text-slate-500 font-semibold">Analyzing Scheduling Timelines...</p>
         </div>
       </div>
@@ -69,18 +69,18 @@ export const ShiftOptimization: React.FC = () => {
   }));
 
   return (
-    <div className="h-full space-y-6 overflow-y-auto px-8 py-6">
+    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 text-slate-800">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Workforce Optimization Ledger</h2>
-          <p className="text-sm text-slate-500">Visual timelines and history of real-time schedule modifications.</p>
+          <h2 className="text-2xl font-black text-slate-900">Workforce Optimization Ledger</h2>
+          <p className="text-xs text-slate-500">Visual timelines and history of real-time schedule modifications.</p>
         </div>
         <button 
           onClick={fetchData}
-          className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm"
+          className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-sm"
         >
-          <RefreshCw size={14} /> Refresh
+          <RefreshCw size={14} className="text-violet-500" /> Refresh
         </button>
       </div>
 
@@ -88,33 +88,33 @@ export const ShiftOptimization: React.FC = () => {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Active Shifts Telemetry */}
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-1">
-          <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-1.5">
-            <Clock size={16} className="text-sky-500" /> Active Roster Telemetry
+          <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+            <Clock size={16} className="text-violet-500" /> Active Roster Telemetry
           </h4>
           <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
             {activeShifts.length > 0 ? (
               activeShifts.map((s) => (
-                <div key={s.id} className="rounded-lg border border-slate-100 p-3 bg-slate-50/50">
+                <div key={s.id} className="rounded-lg border border-slate-200 p-3 bg-slate-50/50">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h5 className="font-semibold text-slate-900 text-xs">{s.nurse_name}</h5>
-                      <span className="text-[10px] text-slate-400 font-medium">{s.department} • {s.nurse_code}</span>
+                      <h5 className="font-bold text-slate-900 text-xs">{s.nurse_name}</h5>
+                      <span className="text-[10px] text-slate-400 font-semibold">{s.department} • {s.nurse_code}</span>
                     </div>
-                    <span className={`inline-block rounded px-1.5 py-0.5 text-[10px] font-bold ${
-                      s.fatigue_score >= 75 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'
+                    <span className={`inline-block rounded px-1.5 py-0.5 text-[10px] font-black border ${
+                      s.fatigue_score >= 75 ? 'bg-pink-100 text-pink-700 border-pink-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
                     }`}>
                       {s.fatigue_score}% Fatigue
                     </span>
                   </div>
                   
                   {/* Hours progress */}
-                  <div className="mt-3 flex justify-between text-[10px] text-slate-500 font-medium">
+                  <div className="mt-3 flex justify-between text-[10px] text-slate-500 font-bold">
                     <span>Work Duration</span>
                     <span>{s.hours_worked} / 12h</span>
                   </div>
                   <div className="h-1.5 w-full rounded-full bg-slate-100 mt-1 overflow-hidden">
                     <div 
-                      className={`h-full rounded-full ${s.fatigue_score >= 75 ? 'bg-rose-500' : 'bg-sky-500'}`}
+                      className={`h-full rounded-full ${s.fatigue_score >= 75 ? 'bg-pink-500' : 'bg-violet-500'}`}
                       style={{ width: `${(s.hours_worked / 12.0) * 100}%` }}
                     ></div>
                   </div>
@@ -131,7 +131,7 @@ export const ShiftOptimization: React.FC = () => {
         {/* Before/After Visual Timeline Comparison */}
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
           <h4 className="text-sm font-bold text-slate-900 mb-1 flex items-center gap-1.5">
-            <Calendar size={16} className="text-sky-500" />
+            <Calendar size={16} className="text-violet-500" />
             Roster Timeline Optimization Comparison
           </h4>
           <p className="text-xs text-slate-500 mb-5">
@@ -139,8 +139,8 @@ export const ShiftOptimization: React.FC = () => {
           </p>
 
           {selectedHistory ? (
-            <div className="space-y-6 border border-slate-100 rounded-lg p-5 bg-slate-50/50">
-              <div className="flex justify-between items-center bg-white border border-slate-200/60 p-3 rounded-lg text-xs shadow-sm">
+            <div className="space-y-6 border border-slate-200 rounded-lg p-5 bg-slate-50/50">
+              <div className="flex justify-between items-center bg-white border border-slate-200 p-3 rounded-lg text-xs shadow-sm">
                 <div>
                   <span className="text-slate-400 block uppercase font-bold text-[9px]">Department</span>
                   <span className="font-bold text-slate-900">{selectedHistory.department}</span>
@@ -153,20 +153,20 @@ export const ShiftOptimization: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-slate-400 block uppercase font-bold text-[9px]">Optimization Status</span>
-                  <span className="font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase text-[9px] flex items-center gap-0.5">
+                  <span className="font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase text-[9px] flex items-center gap-0.5 border border-emerald-100">
                     <ShieldCheck size={10} /> Active
                   </span>
                 </div>
               </div>
 
               {/* Timeline diagram */}
-              <div className="space-y-5">
+              <div className="space-y-5 text-left">
                 {/* Before Swap Timeline */}
                 <div>
                   <h5 className="text-xs font-bold text-slate-800 mb-2">1. Roster Before Optimization</h5>
-                  <div className="relative border rounded-lg bg-white p-3 flex flex-col justify-center h-12 shadow-sm border-rose-200">
-                    <div className="absolute inset-0 bg-rose-50/30 flex items-center px-4">
-                      <div className="text-xs font-semibold text-rose-700 truncate">
+                  <div className="relative border rounded-lg bg-white p-3 flex flex-col justify-center h-12 shadow-sm border-pink-200">
+                    <div className="absolute inset-0 bg-pink-50/20 flex items-center px-4">
+                      <div className="text-xs font-semibold text-pink-700 truncate">
                         🚨 {selectedHistory.original_nurse} (Assigned to continuous 12-hour high-risk shift)
                       </div>
                     </div>
@@ -188,7 +188,7 @@ export const ShiftOptimization: React.FC = () => {
                   <div className="border rounded-lg bg-white p-3 shadow-sm border-emerald-200">
                     {/* Visual combined timeline block */}
                     <div className="h-6 w-full rounded-md overflow-hidden flex text-[10px] font-semibold text-white">
-                      <div className="bg-rose-400 h-full flex items-center justify-center px-2" style={{ width: '40%' }}>
+                      <div className="bg-pink-400 h-full flex items-center justify-center px-2" style={{ width: '40%' }}>
                         {selectedHistory.original_nurse.split(' ')[0]} (Shortened)
                       </div>
                       <div className="bg-emerald-500 h-full flex items-center justify-center px-2 border-l border-white" style={{ width: '60%' }}>
@@ -206,9 +206,9 @@ export const ShiftOptimization: React.FC = () => {
               </div>
 
               {/* Justification quote */}
-              <div className="border-l-4 border-sky-500 pl-4 py-1.5 bg-sky-50/50 rounded-r-lg">
-                <span className="text-[10px] font-bold text-sky-600 uppercase block tracking-wider">Log Justification:</span>
-                <p className="text-xs text-sky-900 font-medium italic mt-1">"{selectedHistory.justification}"</p>
+              <div className="border-l-4 border-violet-500 pl-4 py-1.5 bg-violet-50/50 rounded-r-lg">
+                <span className="text-[10px] font-bold text-violet-600 uppercase block tracking-wider text-left">Log Justification:</span>
+                <p className="text-xs text-violet-900 font-medium italic mt-1 text-left">"{selectedHistory.justification}"</p>
               </div>
             </div>
           ) : (
@@ -221,14 +221,14 @@ export const ShiftOptimization: React.FC = () => {
 
       {/* Roster Optimization History Table */}
       <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2 border-b border-slate-100 p-5">
-          <History size={18} className="text-slate-500" />
+        <div className="flex items-center gap-2 border-b border-slate-200 p-5 text-left">
+          <History size={18} className="text-violet-500" />
           <h4 className="text-sm font-bold text-slate-900"> Roster Adjustment Audit Trails</h4>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-slate-200 bg-slate-50/50 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 <th className="px-6 py-3.5">Log Timestamp</th>
                 <th className="px-6 py-3.5">Department</th>
                 <th className="px-6 py-3.5">Relieved Nurse (Fatigued)</th>
@@ -237,7 +237,7 @@ export const ShiftOptimization: React.FC = () => {
                 <th className="px-6 py-3.5 text-center">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 text-xs text-slate-600">
               {historyLogs.length > 0 ? (
                 historyLogs.map((log) => {
                   const isSelected = selectedHistory?.id === log.id;
@@ -245,7 +245,7 @@ export const ShiftOptimization: React.FC = () => {
                     <tr 
                       key={log.id} 
                       onClick={() => setSelectedHistory(log)}
-                      className={`cursor-pointer hover:bg-slate-50/50 transition ${isSelected ? 'bg-sky-50/30 font-medium' : ''}`}
+                      className={`cursor-pointer hover:bg-slate-50/50 transition ${isSelected ? 'bg-violet-50/50 font-bold text-violet-700' : ''}`}
                     >
                       <td className="px-6 py-4 text-xs text-slate-500">
                         {new Date(log.timestamp).toLocaleDateString()} {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -253,10 +253,10 @@ export const ShiftOptimization: React.FC = () => {
                       <td className="px-6 py-4 font-semibold text-slate-700">
                         {log.department}
                       </td>
-                      <td className="px-6 py-4 text-rose-600 font-semibold">
+                      <td className="px-6 py-4 text-pink-650 font-bold">
                         {log.original_nurse}
                       </td>
-                      <td className="px-6 py-4 text-emerald-600 font-semibold">
+                      <td className="px-6 py-4 text-emerald-600 font-bold">
                         {log.replacement_nurse}
                       </td>
                       <td className="px-6 py-4 text-xs text-slate-600 max-w-xs truncate" title={log.justification}>
@@ -284,18 +284,18 @@ export const ShiftOptimization: React.FC = () => {
       
       {/* Shift Utilization Analysis (Recharts) */}
       {activeShifts.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-1.5">
-            <TrendingUp size={16} className="text-teal-600" /> Shift Utilization & Hour Allocation limits
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm text-left">
+          <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+            <TrendingUp size={16} className="text-violet-500" /> Shift Utilization & Hour Allocation limits
           </h4>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={shiftChartData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} label={{ value: 'Hours Worked', angle: -90, position: 'insideLeft' }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
+                <YAxis stroke="#64748b" fontSize={11} label={{ value: 'Hours Worked', angle: -90, position: 'insideLeft', style: { fill: '#64748b' } }} />
                 <Tooltip />
-                <Bar dataKey="Hours" fill="#0d9488" radius={[4, 4, 0, 0]} barSize={35} />
+                <Bar dataKey="Hours" fill="#7c3aed" radius={[4, 4, 0, 0]} barSize={35} />
               </BarChart>
             </ResponsiveContainer>
           </div>
