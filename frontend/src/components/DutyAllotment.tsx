@@ -244,7 +244,7 @@ export const DutyAllotment: React.FC<DutyAllotmentProps> = () => {
             </h4>
             <div className="space-y-2">
               {standbyNurses.map((n) => (
-                <div key={n.id} className="flex items-center justify-between border-b border-slate-105 dark:border-slate-800 pb-2 text-xs">
+                <div key={n.id} className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2 text-xs">
                   <div>
                     <p className="font-bold text-slate-800 dark:text-slate-200 leading-none">{n.name}</p>
                     <span className="text-[10px] text-slate-400 dark:text-slate-550 mt-0.5 block">{n.skill_category}</span>
@@ -261,7 +261,7 @@ export const DutyAllotment: React.FC<DutyAllotmentProps> = () => {
         {/* Ward Allotments Grid (Right Panels) */}
         <div className="lg:col-span-3">
           <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm h-full text-left">
-            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-205 mb-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <span className="flex items-center gap-1.5">
                 <Building size={16} className="text-purple-500" />
                 Active Ward Allotment Status
@@ -274,7 +274,7 @@ export const DutyAllotment: React.FC<DutyAllotmentProps> = () => {
                 const nursesInDept = nursesByDept(dept);
                 return (
                   <div key={dept} className="rounded-lg border border-slate-100 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-950/20 p-4 flex flex-col h-[520px]">
-                    <div className="flex items-center justify-between border-b border-slate-105 dark:border-slate-800 pb-2 mb-3">
+                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2 mb-3">
                       <span className="font-bold text-slate-800 dark:text-slate-200 text-xs">{dept} Ward</span>
                       <span className="rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-350 px-2 py-0.5 text-[10px] font-black">
                         {nursesInDept.length}
@@ -299,7 +299,7 @@ export const DutyAllotment: React.FC<DutyAllotmentProps> = () => {
                                 </span>
                               </div>
 
-                              <div className="flex items-center justify-between text-[9px] text-slate-500 pt-1 border-t border-slate-105 dark:border-slate-800">
+                              <div className="flex items-center justify-between text-[9px] text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800">
                                 <span className="font-bold text-slate-400">{nurse.skill_category}</span>
                                 <span className={`px-1.5 py-0.5 rounded font-extrabold uppercase border ${getStatusBadge(nurse.status)}`}>
                                   {nurse.status}

@@ -305,14 +305,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
           <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Nurse Registry & Live Biosignals</h4>
           <div className="flex flex-wrap items-center gap-3">
             {/* Search Input */}
-            <div className="relative flex items-center rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-1.5 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-455 focus-within:border-purple-500 focus-within:bg-white dark:focus-within:bg-slate-900 transition">
+            <div className="relative flex items-center rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-1.5 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 focus-within:border-purple-500 focus-within:bg-white dark:focus-within:bg-slate-900 transition">
               <Search size={14} />
               <input
                 type="text"
                 placeholder="Search name or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-transparent pl-2 text-xs text-slate-700 dark:text-slate-250 focus:outline-none w-48 placeholder-slate-400 dark:placeholder-slate-550"
+                className="bg-transparent pl-2 text-xs text-slate-750 dark:text-slate-200 focus:outline-none w-48 placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
             {/* Department Dropdown */}
@@ -351,7 +351,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                 filteredNurses.map((nurse) => {
                   const isHighFatigue = nurse.current_fatigue >= 75;
                   return (
-                    <tr key={nurse.id} className="hover:bg-slate-55/30 dark:hover:bg-slate-850/30 transition">
+                    <tr key={nurse.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
                       <td className="px-6 py-4 font-mono text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                         {nurse.nurse_id}
                       </td>
@@ -415,7 +415,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                 })
               ) : (
                 <tr>
-                  <td colSpan={9} className="px-6 py-10 text-center text-slate-400 dark:text-slate-655">
+                  <td colSpan={9} className="px-6 py-10 text-center text-slate-400 dark:text-slate-500">
                     No nurses found matching the active filters.
                   </td>
                 </tr>
@@ -427,14 +427,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
       
       {/* Visual Heatmap Grid */}
       <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm text-left">
-        <h4 className="text-sm font-bold text-slate-850 dark:text-slate-255 mb-3">Live Presence Grid (24-Hour Roster)</h4>
+        <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3">Live Presence Grid (24-Hour Roster)</h4>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
           {nurses.map((nurse) => {
-            let bgClass = 'bg-slate-105 hover:bg-slate-200 dark:bg-slate-850 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400';
+            let bgClass = 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400';
             if (nurse.status === 'Active') {
               bgClass = nurse.current_fatigue >= 75 
                 ? 'bg-rose-500 hover:bg-rose-600 border-rose-600 text-white' 
-                : 'bg-purple-500 hover:bg-purple-650 border-purple-600 text-white shadow-xs';
+                : 'bg-purple-500 hover:bg-purple-600 border-purple-600 text-white shadow-sm';
             } else if (nurse.status === 'Break') {
               bgClass = 'bg-amber-400 hover:bg-amber-500 border-amber-500 text-white';
             }
@@ -453,7 +453,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
           <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-purple-500"></span> Active (Healthy)</div>
           <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-amber-400"></span> On Break</div>
           <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-rose-500"></span> Active (Fatigued)</div>
-          <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-slate-105 dark:bg-slate-850 border border-slate-200 dark:border-slate-800"></span> Offline</div>
+          <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-800"></span> Offline</div>
         </div>
       </div>
     </div>

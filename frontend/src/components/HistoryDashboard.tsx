@@ -140,12 +140,12 @@ export const HistoryDashboard: React.FC = () => {
 
   const getFatigueRiskColor = (score: number) => {
     if (score >= 75) return 'text-rose-600 dark:text-rose-400 font-extrabold';
-    if (score >= 50) return 'text-amber-605 dark:text-amber-400 font-bold';
+    if (score >= 50) return 'text-amber-600 dark:text-amber-400 font-bold';
     return 'text-emerald-600 dark:text-emerald-450 font-bold';
   };
 
   return (
-    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 dark:bg-slate-950 text-slate-850 dark:text-slate-100">
+    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
       {/* Page Header */}
       <div className="flex items-center justify-between border-b border-slate-150 dark:border-slate-800 pb-4">
         <div>
@@ -207,7 +207,7 @@ export const HistoryDashboard: React.FC = () => {
                       className={`w-full text-left rounded-lg p-3 border transition-all duration-150 ${
                         isSelected
                           ? 'bg-purple-50/70 dark:bg-purple-950/20 border-purple-300 dark:border-purple-900 shadow-xs'
-                          : 'border-slate-105 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-850/40'
+                          : 'border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-800/40'
                       }`}
                     >
                       <div className="flex justify-between items-start">
@@ -217,8 +217,8 @@ export const HistoryDashboard: React.FC = () => {
                         </div>
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
                           n.status === 'Active' ? 'bg-emerald-100 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-400' :
-                          n.status === 'Break' ? 'bg-amber-100 dark:bg-amber-950/20 text-amber-805 dark:text-amber-400' :
-                          'bg-slate-100 dark:bg-slate-800 text-slate-605 dark:text-slate-400'
+                          n.status === 'Break' ? 'bg-amber-100 dark:bg-amber-950/20 text-amber-500 dark:text-amber-400' :
+                          'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                         }`}>
                           {n.status}
                         </span>
@@ -247,7 +247,7 @@ export const HistoryDashboard: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-3">
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white">{historyData.nurse.name}</h3>
-                    <span className="text-xs font-mono bg-slate-105 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded font-semibold border dark:border-slate-700">{historyData.nurse.nurse_id}</span>
+                    <span className="text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded font-semibold border dark:border-slate-700">{historyData.nurse.nurse_id}</span>
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-450 mt-1">
                     {historyData.nurse.skill_category} • {historyData.nurse.email}
@@ -255,8 +255,8 @@ export const HistoryDashboard: React.FC = () => {
                   <div className="mt-3 flex items-center gap-2.5">
                     <span className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-bold border ${
                       historyData.nurse.status === 'Active' ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-405 border-emerald-100 dark:border-emerald-900/50' :
-                      historyData.nurse.status === 'Break' ? 'bg-amber-50 dark:bg-amber-950/20 text-amber-705 dark:text-amber-400 border-amber-100 dark:border-amber-900/50' :
-                      'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-450 border-slate-205 dark:border-slate-705'
+                      historyData.nurse.status === 'Break' ? 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-900/50' :
+                      'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-450 border-slate-200 dark:border-slate-700'
                     }`}>
                       <span className={`h-1.5 w-1.5 rounded-full ${
                         historyData.nurse.status === 'Active' ? 'bg-emerald-500 animate-pulse' :
@@ -421,7 +421,7 @@ export const HistoryDashboard: React.FC = () => {
                           {historyData.replacements.map((r) => {
                             const isReplaced = r.role === 'Replaced';
                             return (
-                              <div key={r.id} className="rounded-lg border border-slate-105 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-950/10 p-4 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                              <div key={r.id} className="rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-950/10 p-4 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                                 <div className="space-y-1 flex-1">
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <span className={`inline-block rounded px-2 py-0.5 text-[10px] font-bold border ${
@@ -511,8 +511,8 @@ export const HistoryDashboard: React.FC = () => {
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-40 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl shadow-sm gap-2">
-              <Activity size={32} className="text-slate-305 dark:text-slate-600 animate-pulse" />
-              <span className="text-xs font-bold text-slate-400 dark:text-slate-500">Select a clinician from the list to view their detailed log.</span>
+              <Activity size={32} className="text-slate-300 dark:text-slate-600 animate-pulse" />
+              <span className="text-xs font-bold text-slate-400 dark:text-slate-550">Select a clinician from the list to view their detailed log.</span>
             </div>
           )}
         </div>

@@ -276,11 +276,11 @@ export const App: React.FC = () => {
           
           {/* Left search bar */}
           <div className="flex items-center gap-3 w-64 md:w-80">
-            <Search size={16} className="text-slate-400 dark:text-slate-550" />
+            <Search size={16} className="text-slate-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Search projects, clinicians..."
-              className="bg-transparent text-xs text-slate-700 dark:text-slate-200 focus:outline-none w-full placeholder-slate-400 dark:placeholder-slate-550"
+              className="bg-transparent text-xs text-slate-700 dark:text-slate-200 focus:outline-none w-full placeholder-slate-400 dark:placeholder-slate-500"
             />
           </div>
 
