@@ -457,6 +457,110 @@ def get_telemetry_history(nurse_id: str, db: Session = Depends(get_db)):
         
     return result
 
+@app.get(settings.API_V1_STR + "/nurses/{nurse_id}/shift-history")
+def get_nurse_shift_history(nurse_id: str, db: Session = Depends(get_db)):
+    # 1. Fetch nurse
+    nurse = db.query(Nurse).filter(Nurse.id == nurse_id).first()
+    if not nurse:
+        raise HTTPException(status_code=404, detail="Nurse not found")
+        
+    # 2. Get past shifts and upcoming shifts
+    now = datetime.utcnow()
+    shifts = db.query(Shift).filter(Shift.nurse_id == nurse_id).order_by(desc(Shift.start_time)).all()
+    
+    past_shifts = []
+    upcoming_shifts = []
+    
+    for s in shifts:
+        shift_data = {
+            "id": s.id,
+            "start_time": s.start_time.isoformat(),
+            "end_time": s.end_time.isoformat(),
+            "status": s.status,
+            "hours_worked": round(s.current_work_hours, 1),
+            "department": nurse.department
+        }
+        if s.start_time > now or s.status == "Scheduled":
+            upcoming_shifts.append(shift_data)
+        else:
+            past_shifts.append(shift_data)
+            
+    # 3. Dynamic seed: if there are no upcoming shifts in the database for this nurse,
+    # let's generate 3 upcoming shifts starting tomorrow, spaced 2 days apart, and save them in the DB
+    if not upcoming_shifts:
+        new_upcoming_shifts = []
+        for i in range(1, 4):
+            day_offset = i * 2
+            start_date_future = now + timedelta(days=day_offset)
+            is_night = (hash(nurse.id) + start_date_future.day) % 4 == 0
+            start_hour = 19 if is_night else 7
+            future_start = start_date_future.replace(hour=start_hour, minute=0, second=0, microsecond=0)
+            future_end = future_start + timedelta(hours=12)
+            
+            s = Shift(
+                nurse_id=nurse.id,
+                start_time=future_start,
+                end_time=future_end,
+                status="Scheduled",
+                current_work_hours=0.0
+            )
+            db.add(s)
+            new_upcoming_shifts.append(s)
+        db.commit()
+        
+        # Reload upcoming shifts from db to include their generated IDs
+        upcoming_shifts = []
+        for s in new_upcoming_shifts:
+            upcoming_shifts.append({
+                "id": s.id,
+                "start_time": s.start_time.isoformat(),
+                "end_time": s.end_time.isoformat(),
+                "status": s.status,
+                "hours_worked": 0.0,
+                "department": nurse.department
+            })
+            
+    # 4. Get replacement log history where this nurse was involved
+    replacements = db.query(ReplacementLog).filter(
+        (ReplacementLog.original_nurse_id == nurse_id) | 
+        (ReplacementLog.replacement_nurse_id == nurse_id)
+    ).order_by(desc(ReplacementLog.timestamp)).all()
+    
+    replacement_history = []
+    for r in replacements:
+        orig = db.query(Nurse).filter(Nurse.id == r.original_nurse_id).first()
+        rep = db.query(Nurse).filter(Nurse.id == r.replacement_nurse_id).first()
+        
+        role = "Replaced" if r.original_nurse_id == nurse_id else "Replacing"
+        
+        replacement_history.append({
+            "id": r.id,
+            "timestamp": r.timestamp.isoformat(),
+            "original_nurse": orig.name if orig else "Unknown",
+            "replacement_nurse": rep.name if rep else "Unknown",
+            "department": orig.department if orig else "Unknown",
+            "justification": r.justification,
+            "status": r.status,
+            "role": role
+        })
+        
+    return {
+        "nurse": {
+            "id": nurse.id,
+            "nurse_id": nurse.nurse_id,
+            "name": nurse.name,
+            "email": nurse.email,
+            "department": nurse.department,
+            "skill_category": nurse.skill_category,
+            "status": nurse.status,
+            "current_fatigue": nurse.current_fatigue,
+            "last_seen": nurse.last_seen.isoformat()
+        },
+        "history": past_shifts,
+        "upcoming": upcoming_shifts,
+        "replacements": replacement_history
+    }
+
 @app.get(f"{settings.API_V1_STR}/shifts/active")
 def get_active_shifts(db: Session = Depends(get_db)):
     shifts = db.query(Shift).filter(Shift.status == "Active").all()

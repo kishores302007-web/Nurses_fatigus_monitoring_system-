@@ -136,7 +136,7 @@ def seed_db(db: Session):
         
         # Schedule shifts every 2 days
         current_day = start_date
-        while current_day < datetime.utcnow():
+        while current_day < datetime.utcnow() + timedelta(days=7):
             # Nurse works on day if random holds, or every other day
             if (hash(nurse.id) + current_day.day) % 2 == 0:
                 # 12-hour shift starting at 07:00 or 19:00
@@ -146,12 +146,22 @@ def seed_db(db: Session):
                 shift_start = current_day.replace(hour=start_hour, minute=0, second=0, microsecond=0)
                 shift_end = shift_start + timedelta(hours=12)
                 
+                if shift_start > datetime.utcnow():
+                    status = "Scheduled"
+                    current_work_hours = 0.0
+                elif shift_end < datetime.utcnow():
+                    status = "Completed"
+                    current_work_hours = 12.0
+                else:
+                    status = "Active"
+                    current_work_hours = max(0.0, (datetime.utcnow() - shift_start).total_seconds() / 3600.0)
+
                 shift = Shift(
                     nurse_id=nurse.id,
                     start_time=shift_start,
                     end_time=shift_end,
-                    status="Completed" if shift_end < datetime.utcnow() else "Active",
-                    current_work_hours=12.0 if shift_end < datetime.utcnow() else max(0.0, (datetime.utcnow() - shift_start).total_seconds() / 3600.0)
+                    status=status,
+                    current_work_hours=current_work_hours
                 )
                 shifts_to_add.append(shift)
                 

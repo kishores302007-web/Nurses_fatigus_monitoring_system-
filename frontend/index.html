@@ -4,16 +4,54 @@
     <meta charset="UTF-8" />
     <script>
       // Suppress browser extension error noise (e.g., Grammarly, Chrome extension message channel closures)
+      const isNoise = (str) => {
+        if (!str) return false;
+        const lower = String(str).toLowerCase();
+        return (
+          lower.includes('message channel closed') ||
+          lower.includes('message channel') ||
+          lower.includes('connection attempt superseded') ||
+          lower.includes('asynchronous response by returning true') ||
+          lower.includes('grammarly') ||
+          lower.includes('chrome-extension')
+        );
+      };
+
+      const filterNoiseArgs = (args) => {
+        return args.some(arg => {
+          if (!arg) return false;
+          if (typeof arg === 'string') return isNoise(arg);
+          if (arg.message) return isNoise(arg.message);
+          if (arg.stack) return isNoise(arg.stack);
+          try {
+            return isNoise(JSON.stringify(arg));
+          } catch (e) {
+            return false;
+          }
+        });
+      };
+
+      // Override console.error and console.warn to block extension noise from being logged
+      const originalConsoleError = console.error;
+      console.error = function (...args) {
+        if (filterNoiseArgs(args)) return;
+        originalConsoleError.apply(console, args);
+      };
+
+      const originalConsoleWarn = console.warn;
+      console.warn = function (...args) {
+        if (filterNoiseArgs(args)) return;
+        originalConsoleWarn.apply(console, args);
+      };
+
       window.addEventListener('error', function (e) {
         if (
-          (e.message && (
-            e.message.includes('message channel closed') ||
-            e.message.includes('Connection attempt superseded') ||
-            e.message.includes('Grammarly')
-          )) ||
-          (e.filename && e.filename.includes('chrome-extension'))
+          isNoise(e.message) ||
+          isNoise(e.filename) ||
+          (e.error && (isNoise(e.error.message) || isNoise(e.error.stack)))
         ) {
           e.stopImmediatePropagation();
+          e.preventDefault();
         }
       }, true);
 
@@ -22,12 +60,7 @@
         if (reason) {
           const message = reason.message || String(reason);
           const stack = reason.stack || '';
-          if (
-            message.includes('message channel closed') ||
-            message.includes('Connection attempt superseded') ||
-            message.includes('Grammarly') ||
-            stack.includes('chrome-extension')
-          ) {
+          if (isNoise(message) || isNoise(stack)) {
             e.stopImmediatePropagation();
             e.preventDefault();
           }

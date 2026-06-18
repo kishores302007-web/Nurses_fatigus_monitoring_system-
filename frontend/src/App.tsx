@@ -9,6 +9,7 @@ import { Analytics } from './components/Analytics';
 import { Alerts } from './components/Alerts';
 import { AdminPanel } from './components/AdminPanel';
 import { DutyAllotment } from './components/DutyAllotment';
+import { HistoryDashboard } from './components/HistoryDashboard';
 import { Nurse } from './types/types';
 import { 
   Bell, 
@@ -154,6 +155,8 @@ export const App: React.FC = () => {
         return <Alerts />;
       case 'Duty Allotment':
         return <DutyAllotment />;
+      case 'Shift History':
+        return <HistoryDashboard />;
       case 'Administration':
         return <AdminPanel />;
       default:
