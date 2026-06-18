@@ -37,10 +37,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, onL
           <Activity size={20} />
         </div>
         <div className="text-left">
-          <h1 className="text-sm font-black tracking-tight text-slate-900 dark:text-white leading-none">
-            <span className="text-violet-600 dark:text-violet-400">Aegis</span> Vigilance
+          <h1 className="text-base font-black tracking-wider text-slate-900 dark:text-white uppercase leading-none">
+            <span className="text-violet-600 dark:text-violet-400">REST</span>AWARE
           </h1>
-          <span className="text-[9px] font-bold text-violet-500 dark:text-violet-450 tracking-wider">CLINICAL ROSTER PORTAL</span>
         </div>
       </div>
 
