@@ -111,8 +111,8 @@ export const ReplacementEngine: React.FC<ReplacementEngineProps> = ({ selectedNu
         setIsModalOpen(false);
         onSelectNurse(null);
         setSelectedCandidate(null);
-        // Navigate to Shift Optimization to see timeline changes
-        onNavigateToTab('Shift Optimization');
+        // Navigate to Shift History to see timeline changes
+        onNavigateToTab('Shift History');
       } else {
         const err = await res.json();
         alert(`Failed to execute swap: ${err.detail}`);

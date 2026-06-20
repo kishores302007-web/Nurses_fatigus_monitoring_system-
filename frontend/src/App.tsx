@@ -4,7 +4,6 @@ import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
 import { FatigueMonitoring } from './components/FatigueMonitoring';
 import { ReplacementEngine } from './components/ReplacementEngine';
-import { ShiftOptimization } from './components/ShiftOptimization';
 import { Alerts } from './components/Alerts';
 import { AdminPanel } from './components/AdminPanel';
 import { DutyAllotment } from './components/DutyAllotment';
@@ -169,8 +168,6 @@ export const App: React.FC = () => {
             onNavigateToTab={setCurrentTab}
           />
         );
-      case 'Shift Optimization':
-        return <ShiftOptimization />;
       case 'Alerts':
         return <Alerts />;
       case 'Duty Allotment':
