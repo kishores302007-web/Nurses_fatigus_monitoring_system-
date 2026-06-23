@@ -166,3 +166,14 @@ class ShiftAllot(BaseModel):
     shift_type: str
     duration_hours: float
 
+class ShiftAllotProposed(BaseModel):
+    nurse_id: str
+    department: str
+    shift_type: str
+    duration_hours: float
+    start_time: str
+    end_time: str
+
+class ProposedFixtureConfirm(BaseModel):
+    allotments: List[ShiftAllotProposed]
+

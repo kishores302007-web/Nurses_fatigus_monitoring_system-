@@ -11,7 +11,7 @@ from app.core.config import settings
 from app.core.database import get_db, SessionLocal, Base, engine
 from app.core.security import verify_password, create_access_token, get_password_hash
 from app.models.models import User, Nurse, Device, SensorRecord, FatigueLog, Shift, Alert, AuditLog, ReplacementLog
-from app.schemas.schemas import UserLogin, Token, RAGQuery, RAGResponse, ReplacementCreate, UserCreate, ShiftAllot
+from app.schemas.schemas import UserLogin, Token, RAGQuery, RAGResponse, ReplacementCreate, UserCreate, ShiftAllot, ProposedFixtureConfirm, ShiftAllotProposed
 from app.ml.pipeline import ml_pipeline
 from app.ml.simulator import seed_db, generate_live_reading
 from app.services.replacement_engine import SmartReplacementEngine
@@ -596,6 +596,158 @@ def get_shifts_history(db: Session = Depends(get_db)):
             "status": r.status
         })
     return result
+
+@app.get(settings.API_V1_STR + "/shifts/auto-fixture")
+def get_auto_fixture(db: Session = Depends(get_db)):
+    # 1. Determine "tomorrow"
+    now = datetime.utcnow()
+    tomorrow_date = now.date() + timedelta(days=1)
+    
+    # 2. Get all nurses
+    nurses = db.query(Nurse).all()
+    if not nurses:
+        return []
+        
+    # 3. Calculate historical stats for each nurse
+    nurse_stats = []
+    for nurse in nurses:
+        # Cumulative hours worked in completed shifts
+        completed_shifts = db.query(Shift).filter(
+            and_(Shift.nurse_id == nurse.id, Shift.status == "Completed")
+        ).all()
+        total_hours = sum(s.current_work_hours for s in completed_shifts)
+        
+        # Average fatigue score
+        logs = db.query(FatigueLog).filter(FatigueLog.nurse_id == nurse.id).all()
+        avg_fatigue = sum(l.fatigue_score for l in logs) / len(logs) if logs else 15.0
+        
+        # Last shift end time
+        latest_shift = db.query(Shift).filter(
+            and_(Shift.nurse_id == nurse.id, Shift.status.in_(["Completed", "Replaced"]))
+        ).order_by(desc(Shift.end_time)).first()
+        
+        last_shift_end = latest_shift.end_time if latest_shift else (now - timedelta(days=5)) # default to 5 days ago if never worked
+        
+        nurse_stats.append({
+            "nurse": nurse,
+            "total_hours": total_hours,
+            "avg_fatigue": avg_fatigue,
+            "last_shift_end": last_shift_end
+        })
+        
+    # 4 wards: ICU, Emergency, Cardiology, General Ward
+    # 2 rotations: Morning (07:00 to 19:00), Night (19:00 to 07:00)
+    wards = ["ICU", "Emergency", "Cardiology", "General Ward"]
+    shift_types = ["Morning", "Night"]
+    
+    proposed_allotments = []
+    assigned_nurse_ids = set()
+    
+    for dept in wards:
+        for shift_type in shift_types:
+            # Shift timing datetimes
+            if shift_type == "Morning":
+                start_dt = datetime(tomorrow_date.year, tomorrow_date.month, tomorrow_date.day, 7, 0, 0)
+                end_dt = start_dt + timedelta(hours=12)
+            else:
+                start_dt = datetime(tomorrow_date.year, tomorrow_date.month, tomorrow_date.day, 19, 0, 0)
+                end_dt = start_dt + timedelta(hours=12)
+                
+            # Filter eligible nurses:
+            eligible = []
+            for ns in nurse_stats:
+                if ns["nurse"].id in assigned_nurse_ids:
+                    continue
+                # Rest duration check
+                rest_duration = (start_dt - ns["last_shift_end"]).total_seconds() / 3600.0
+                if rest_duration < 12.0:
+                    continue
+                
+                # Check active shifts today
+                active_shift = db.query(Shift).filter(
+                    and_(Shift.nurse_id == ns["nurse"].id, Shift.status == "Active")
+                ).first()
+                if active_shift:
+                    # If active shift ends after start_dt minus 12 hours, skip
+                    if active_shift.end_time > (start_dt - timedelta(hours=12)):
+                        continue
+                
+                # Score the eligibility:
+                # We want to minimize total_hours, minimize avg_fatigue, and maximize rest_duration.
+                # Lower score is better:
+                score = ns["total_hours"] + (ns["avg_fatigue"] * 0.1) - (rest_duration * 0.05)
+                
+                eligible.append({
+                    "ns_data": ns,
+                    "rest_duration": rest_duration,
+                    "score": score
+                })
+                
+            if eligible:
+                # Sort by score ascending (lowest score is best)
+                eligible.sort(key=lambda x: x["score"])
+                selected = eligible[0]
+                selected_nurse = selected["ns_data"]["nurse"]
+                assigned_nurse_ids.add(selected_nurse.id)
+                
+                proposed_allotments.append({
+                    "nurse_id": selected_nurse.id,
+                    "nurse_name": selected_nurse.name,
+                    "nurse_code": selected_nurse.nurse_id,
+                    "department": dept,
+                    "shift_type": shift_type,
+                    "duration_hours": 12.0,
+                    "start_time": start_dt.isoformat(),
+                    "end_time": end_dt.isoformat(),
+                    "past_hours_worked": round(selected["ns_data"]["total_hours"], 1),
+                    "average_past_fatigue": round(selected["ns_data"]["avg_fatigue"], 1),
+                    "hours_rest_obtained": round(selected["rest_duration"], 1),
+                    "score": round(selected["score"], 1)
+                })
+                
+    return proposed_allotments
+
+@app.post(f"{settings.API_V1_STR}/shifts/confirm-fixture")
+def confirm_proposed_fixture(payload: ProposedFixtureConfirm, db: Session = Depends(get_db)):
+    try:
+        now = datetime.utcnow()
+        allotted_count = 0
+        
+        for allot in payload.allotments:
+            # 1. Fetch nurse
+            nurse = db.query(Nurse).filter(Nurse.id == allot.nurse_id).first()
+            if not nurse:
+                continue
+                
+            # Parse iso string times
+            start_dt = datetime.fromisoformat(allot.start_time)
+            end_dt = datetime.fromisoformat(allot.end_time)
+            
+            # 2. Schedule it as "Scheduled" since it's a next-day shift
+            new_shift = Shift(
+                nurse_id=nurse.id,
+                start_time=start_dt,
+                end_time=end_dt,
+                status="Scheduled",
+                current_work_hours=0.0
+            )
+            db.add(new_shift)
+            
+            # Log allotment action in audit logs
+            audit = AuditLog(
+                user="Supervisor (Auto-Scheduler)",
+                action="SHIFT_ALLOTMENT_AUTO",
+                timestamp=now,
+                details=f"Auto-allotted nurse {nurse.name} to {allot.department} ward on {allot.shift_type} shift (Duration: {allot.duration_hours}h, start: {start_dt})."
+            )
+            db.add(audit)
+            allotted_count += 1
+            
+        db.commit()
+        return {"status": "success", "message": f"Successfully confirmed next-day cyclic fixture. {allotted_count} shifts scheduled."}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Failed to confirm fixture: {str(e)}")
 
 @app.post(f"{settings.API_V1_STR}/rag/query", response_model=RAGResponse)
 def handle_rag_query(payload: RAGQuery, db: Session = Depends(get_db)):

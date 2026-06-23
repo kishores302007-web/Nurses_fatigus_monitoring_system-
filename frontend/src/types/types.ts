@@ -5,7 +5,7 @@ export interface Nurse {
   email: string;
   department: string;
   skill_category: string;
-  status: 'Active' | 'Break' | 'Offline';
+  status: 'Active' | 'Break' | 'Offline' | 'Leave';
   current_fatigue: number;
   device_status: 'Active' | 'Inactive' | 'Disconnected' | 'None';
   work_hours: number;

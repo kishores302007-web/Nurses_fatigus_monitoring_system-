@@ -1,16 +1,19 @@
-# Technology Stack Documentation - Nurse Fatigue Platform
+# Technology Stack Documentation - RESTAWARE Nurse Fatigue Platform
 
-This document details the architectural stack, programming libraries, database engines, and hardware integration protocols used in the Nurse Fatigue Intelligence & Workforce Optimization Platform.
+This document details the architectural stack, programming libraries, database engines, and hardware integration protocols used in the RESTAWARE Nurse Fatigue Intelligence & Workforce Optimization Platform.
 
 ---
 
 ## 🎨 1. Frontend Web Portal
-The dashboard is designed as a responsive, real-time single-page application (SPA) built on React.
+The dashboard is designed as a responsive, real-time single-page application (SPA) built on React with a premium, customized **Liquid Glass UI** aesthetic.
 
 * **React (v18.2)**: Core UI library utilizing functional components, hooks (`useState`, `useEffect`, `useContext`, `useRef`), and Context APIs for global state.
 * **Vite (v5.4)**: Dev compiler and bundler optimized for rapid hot reloads (HMR) and production build trees.
 * **TypeScript (v5.2)**: Static typing layer defining interfaces for API response bodies, WS messages, and UI props.
-* **TailwindCSS (v3.4)**: Utility-first CSS engine mapping out the dark-slate and hospital-teal design system.
+* **TailwindCSS (v3.4)**: Utility-first CSS engine styling layout components.
+* **Liquid Glass Styling System (Custom CSS)**:
+  - Frosted glass cards and panels styled with backdrop blur (`backdrop-blur-md`/`backdrop-blur-lg`) and semi-translucent white borders.
+  - Floating, glowing background spheres built with CSS radial gradients (soft violet, pink, and sky-blue pastels) drifting dynamically behind the console workspace.
 * **Recharts (v2.12)**: D3-based charting framework rendering real-time scrolling charts for physiological signals.
 * **Lucide React (v0.344)**: Modern UI icon pack.
 
@@ -28,8 +31,10 @@ The backend handles HTTP request-response cycles, database access, and WebSocket
 ---
 
 ## 📊 3. Database Engine
-* **SQLite (v3.x)**: Serverless SQL database storing relational tables (Users, Nurses, Devices, Shift Rosters, Alerts, Audit Logs, and historical Sensor Records).
-* **ChromaDB (v0.4)**: Local Vector database storing markdown document embeddings for semantic searches.
+* **SQLite (v3.x)**: Default serverless SQL database storing relational tables (Users, Nurses, Devices, Shift Rosters, Alerts, Audit Logs, and historical Sensor Records).
+* **MySQL (Dual Compatibility)**: Configured DB adapter supports seamless scaling to MySQL/MariaDB instances via `pymysql` and environment overrides (`DATABASE_URL`).
+* **ChromaDB (v0.4)**: Local Vector database storing markdown document embeddings for semantic search in RAG queries.
+* **Sentence-Transformers**: Generates dense vector representations of clinical manuals and guidelines for semantic lookup.
 
 ---
 
@@ -37,8 +42,8 @@ The backend handles HTTP request-response cycles, database access, and WebSocket
 The analytical engine computes clinician fatigue index scores and 2h/4h forecasts.
 
 * **Scikit-Learn (v1.3)**:
-  * **Random Forest Regressor**: Fits raw sensor inputs (HRV, SPO2, GSR) and sleep data to project fatigue scores.
-  * **Isolation Forest**: Fits telemetry inputs to flag anomalous sensor read deviations (e.g. device falls, detachment).
+  - **Random Forest Regressor**: Fits raw sensor inputs (HRV, SPO2, GSR) and sleep data to project fatigue scores.
+  - **Isolation Forest**: Fits telemetry inputs to flag anomalous sensor read deviations (e.g. device falls, detachment).
 * **XGBoost (v1.7)**: Gradient boosting regression algorithm calculating multi-hour fatigue progression forecasts.
 * **NumPy (v1.24) & Pandas (v2.0)**: Data frame loading, linear algebraic signal calculations, and sliding window features.
 

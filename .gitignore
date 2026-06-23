@@ -37,3 +37,7 @@ build/
 # Node
 .next/
 out/
+
+# Database files
+backend/data/*.db
+backend/data/chroma/

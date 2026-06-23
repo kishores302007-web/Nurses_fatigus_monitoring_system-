@@ -131,10 +131,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center bg-slate-50 dark:bg-slate-950">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-purple-500 border-t-transparent"></div>
-          <p className="text-sm font-semibold text-slate-500 dark:text-slate-450">Loading Clinical Registries...</p>
+      <div className="flex h-full items-center justify-center bg-transparent">
+        <div className="flex flex-col items-center gap-3 p-8 glass-card rounded-2xl">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-violet-500 border-t-transparent"></div>
+          <p className="text-sm font-semibold text-slate-500">Loading Clinical Registries...</p>
         </div>
       </div>
     );
@@ -148,29 +148,29 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
   })) : [];
 
   return (
-    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-slate-50 dark:bg-slate-950">
+    <div className="h-full space-y-6 overflow-y-auto px-8 py-6 bg-transparent">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-150 dark:border-slate-800 pb-4">
+      <div className="flex items-center justify-between border-b border-white/20 pb-4">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white">Ward Attendance & Live Registry</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-450">Real-time status of hospital workforce based on wearable IoT telemetry.</p>
+          <h2 className="text-2xl font-black text-slate-900">Ward Attendance & Live Registry</h2>
+          <p className="text-xs text-slate-500">Real-time status of hospital workforce based on wearable IoT telemetry.</p>
         </div>
         <button 
           onClick={fetchDashboardData}
-          className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-850 transition shadow-xs"
+          className="flex items-center gap-2 rounded-lg border border-white/60 bg-white/45 backdrop-blur-md px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-white/65 transition shadow-xs"
         >
-          <RefreshCw size={14} className="text-purple-500" />
+          <RefreshCw size={14} className="text-violet-600" />
           Sync Data
         </button>
       </div>
 
       {/* Notice Banner */}
-      <div className="rounded-xl border border-violet-100 bg-violet-50/30 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="text-xs text-violet-900 font-semibold leading-relaxed text-left">
+      <div className="rounded-xl border border-white/40 bg-white/25 backdrop-blur-md p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="text-xs text-violet-955 font-semibold leading-relaxed text-left">
           🚀 Notice: Wearable IoT biosensors streaming live telemetry. Machine learning models actively calculating fatigue risk levels and optimizing workforce roster replacements.
         </div>
         <div className="flex gap-2 shrink-0">
-          <button onClick={() => onNavigateToTab('Duty Allotment')} className="rounded-lg bg-white border border-violet-250 px-3.5 py-1.5 text-[10px] font-black text-violet-700 hover:bg-violet-50 transition shadow-xs uppercase">
+          <button onClick={() => onNavigateToTab('Duty Allotment')} className="rounded-lg bg-white/60 border border-violet-250/20 px-3.5 py-1.5 text-[10px] font-black text-violet-700 hover:bg-white/80 transition shadow-xs uppercase">
             Roster Optimizer
           </button>
           <button onClick={() => onNavigateToTab('Shift History')} className="rounded-lg bg-gradient-to-r from-violet-500 to-indigo-500 px-3.5 py-1.5 text-[10px] font-black text-white hover:from-violet-600 hover:to-indigo-600 transition shadow-sm uppercase">
@@ -182,7 +182,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
       {/* KPI Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {/* Card 1: High Fatigue Alarms */}
-        <div className="relative overflow-hidden rounded-xl border border-slate-150 border-l-4 border-l-pink-400 bg-white p-6 shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 text-left">
+        <div className="relative overflow-hidden rounded-xl border border-white/60 border-l-4 border-l-pink-400 glass-card p-6 shadow-xs hover:bg-white/55 hover:-translate-y-0.5 transition-all duration-300 text-left">
           <div className="flex items-center justify-between relative z-10">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">High Fatigue Alarms (&gt;75)</span>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-pink-50 text-pink-500">
@@ -191,12 +191,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
           </div>
           <div className="mt-4 relative z-10">
             <h3 className="text-3xl font-black text-slate-900">{kpis.high_fatigue_nurses}</h3>
-            <p className="text-[10px] font-bold text-pink-600 mt-2 uppercase tracking-wide">Immediate swaps recommended</p>
+            <p className="text-[10px] font-bold text-pink-650 mt-2 uppercase tracking-wide">Immediate swaps recommended</p>
           </div>
         </div>
 
         {/* Card 2: Active Roster Presence */}
-        <div className="relative overflow-hidden rounded-xl border border-slate-150 border-l-4 border-l-violet-400 bg-white p-6 shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 text-left">
+        <div className="relative overflow-hidden rounded-xl border border-white/60 border-l-4 border-l-violet-400 glass-card p-6 shadow-xs hover:bg-white/55 hover:-translate-y-0.5 transition-all duration-300 text-left">
           <div className="flex items-center justify-between relative z-10">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Active On-Site Clinicians</span>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-50 text-violet-600">
@@ -205,12 +205,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
           </div>
           <div className="mt-4 relative z-10">
             <h3 className="text-3xl font-black text-slate-900">{kpis.active_nurses}</h3>
-            <p className="text-[10px] font-bold text-violet-600 mt-2 uppercase tracking-wide">Roster Capacity Coverage: {kpis.shift_coverage_pct}%</p>
+            <p className="text-[10px] font-bold text-violet-650 mt-2 uppercase tracking-wide">Roster Capacity Coverage: {kpis.shift_coverage_pct}%</p>
           </div>
         </div>
 
         {/* Card 3: Available Swaps pool */}
-        <div className="relative overflow-hidden rounded-xl border border-slate-150 border-l-4 border-l-sky-400 bg-white p-6 shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 text-left">
+        <div className="relative overflow-hidden rounded-xl border border-white/60 border-l-4 border-l-sky-400 glass-card p-6 shadow-xs hover:bg-white/55 hover:-translate-y-0.5 transition-all duration-300 text-left">
           <div className="flex items-center justify-between relative z-10">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Available Standby Swaps</span>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 text-sky-600">
@@ -219,7 +219,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
           </div>
           <div className="mt-4 relative z-10">
             <h3 className="text-3xl font-black text-slate-900">{kpis.available_replacements}</h3>
-            <p className="text-[10px] font-bold text-sky-600 mt-2 uppercase tracking-wide">Clinicians Fatigue &lt; 40% (Total: {kpis.total_nurses})</p>
+            <p className="text-[10px] font-bold text-sky-650 mt-2 uppercase tracking-wide">Clinicians Fatigue &lt; 40% (Total: {kpis.total_nurses})</p>
           </div>
         </div>
       </div>
@@ -228,36 +228,35 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
       {chartData && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Department presence bar chart */}
-          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm lg:col-span-2 text-left">
-            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4">Department-wise Staff Presence</h4>
+          <div className="rounded-xl border border-white/60 glass-card p-5 shadow-sm lg:col-span-2 text-left">
+            <h4 className="text-sm font-bold text-slate-800 mb-4">Department-wise Staff Presence</h4>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barChartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:hidden" />
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" className="hidden dark:block" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(15, 23, 42, 0.08)" />
                   <XAxis dataKey="name" stroke="#64748b" fontSize={11} fontWeight="bold" />
                   <YAxis stroke="#64748b" fontSize={11} fontWeight="bold" />
                   <Tooltip 
-                    cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }} 
+                    cursor={{ fill: 'rgba(255, 255, 255, 0.25)' }} 
                     contentStyle={{ 
-                      borderRadius: '8px', 
-                      border: '1.5px solid var(--tooltip-border)', 
-                      backgroundColor: 'var(--tooltip-bg)', 
-                      color: 'var(--tooltip-text)' 
+                      borderRadius: '12px', 
+                      border: '1px solid rgba(255, 255, 255, 0.6)', 
+                      backgroundColor: 'rgba(255, 255, 255, 0.85)', 
+                      backdropFilter: 'blur(8px)',
+                      color: '#0f172a'
                     }}
                   />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 'bold' }} />
-                  <Bar dataKey="Active" fill="#b66dff" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Standby" fill="#94a3b8" radius={[4, 4, 0, 0]} className="dark:hidden" />
-                  <Bar dataKey="Standby" fill="#334155" radius={[4, 4, 0, 0]} className="hidden dark:block" />
+                  <Bar dataKey="Active" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Standby" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* Shift Distribution Pie Chart */}
-          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm text-left">
-            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4">Roster Allocation</h4>
+          <div className="rounded-xl border border-white/60 glass-card p-5 shadow-sm text-left">
+            <h4 className="text-sm font-bold text-slate-800 mb-4">Roster Allocation</h4>
             <div className="h-56 w-full flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -271,16 +270,17 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                     dataKey="value"
                   >
                     {chartData.shift_distribution.map((_: any, index: number) => {
-                      const pieColors = ['#b66dff', '#4fa6ff', '#00e676'];
+                      const pieColors = ['#8b5cf6', '#38bdf8', '#10b981'];
                       return <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />;
                     })}
                   </Pie>
                   <Tooltip 
                     contentStyle={{ 
-                      borderRadius: '8px', 
-                      border: '1.5px solid var(--tooltip-border)', 
-                      backgroundColor: 'var(--tooltip-bg)', 
-                      color: 'var(--tooltip-text)' 
+                      borderRadius: '12px', 
+                      border: '1px solid rgba(255, 255, 255, 0.6)', 
+                      backgroundColor: 'rgba(255, 255, 255, 0.85)', 
+                      backdropFilter: 'blur(8px)',
+                      color: '#0f172a'
                     }}
                   />
                 </PieChart>
@@ -288,14 +288,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
             </div>
             <div className="mt-2 flex flex-col gap-2 justify-center">
               {chartData.shift_distribution.map((entry: any, index: number) => {
-                const pieColors = ['#b66dff', '#4fa6ff', '#00e676'];
+                const pieColors = ['#8b5cf6', '#38bdf8', '#10b981'];
                 return (
                   <div key={entry.name} className="flex items-center justify-between text-xs px-2">
                     <div className="flex items-center gap-2">
                       <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: pieColors[index % pieColors.length] }}></span>
-                      <span className="text-slate-500 dark:text-slate-400 font-semibold">{entry.name}</span>
+                      <span className="text-slate-500 font-semibold">{entry.name}</span>
                     </div>
-                    <span className="font-extrabold text-slate-800 dark:text-slate-200">{entry.value} Nurses</span>
+                    <span className="font-extrabold text-slate-800">{entry.value} Nurses</span>
                   </div>
                 );
               })}
@@ -305,26 +305,26 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
       )}
 
       {/* Roster & Search Filters */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-        <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-800 p-5 sm:flex-row sm:items-center sm:justify-between text-left">
-          <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Nurse Registry & Live Biosignals</h4>
+      <div className="rounded-xl border border-white/60 glass-card shadow-sm overflow-hidden">
+        <div className="flex flex-col gap-4 border-b border-white/20 p-5 sm:flex-row sm:items-center sm:justify-between text-left">
+          <h4 className="text-sm font-bold text-slate-800">Nurse Registry & Live Biosignals</h4>
           <div className="flex flex-wrap items-center gap-3">
             {/* Search Input */}
-            <div className="relative flex items-center rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-1.5 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 focus-within:border-purple-500 focus-within:bg-white dark:focus-within:bg-slate-900 transition">
+            <div className="relative flex items-center rounded-lg border border-white/60 px-3 py-1.5 bg-white/20 text-slate-500 focus-within:border-violet-500 focus-within:bg-white/60 transition">
               <Search size={14} />
               <input
                 type="text"
                 placeholder="Search name or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-transparent pl-2 text-xs text-slate-750 dark:text-slate-200 focus:outline-none w-48 placeholder-slate-400 dark:placeholder-slate-500"
+                className="bg-transparent pl-2 text-xs text-slate-700 focus:outline-none w-48 placeholder-slate-400"
               />
             </div>
             {/* Department Dropdown */}
             <select
               value={selectedDept}
               onChange={(e) => setSelectedDept(e.target.value)}
-              className="rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-1.5 text-xs bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-300 shadow-sm focus:outline-none focus:border-purple-500"
+              className="rounded-lg border border-white/60 px-3 py-1.5 text-xs bg-white/45 text-slate-700 shadow-sm focus:outline-none focus:border-violet-500"
             >
               <option value="All">All Departments</option>
               <option value="ICU">ICU</option>
@@ -339,7 +339,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-150 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              <tr className="border-b border-white/20 bg-white/20 text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 <th className="px-6 py-3.5">Nurse ID</th>
                 <th className="px-6 py-3.5">Nurse Name</th>
                 <th className="px-6 py-3.5">Department</th>
@@ -351,16 +351,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                 <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs text-slate-650 dark:text-slate-350">
+            <tbody className="divide-y divide-white/10 text-xs text-slate-650">
               {filteredNurses.length > 0 ? (
                 filteredNurses.map((nurse) => {
                   const isHighFatigue = nurse.current_fatigue >= 75;
                   return (
-                    <tr key={nurse.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
-                      <td className="px-6 py-4 font-mono text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                    <tr key={nurse.id} className="hover:bg-white/20 transition">
+                      <td className="px-6 py-4 font-mono text-[11px] font-semibold text-slate-500">
                         {nurse.nurse_id}
                       </td>
-                      <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-200">
+                      <td className="px-6 py-4 font-bold text-slate-800">
                         {nurse.name}
                       </td>
                       <td className="px-6 py-4 font-semibold">
@@ -376,7 +376,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                       </td>
                       <td className="px-6 py-4">
                         {nurse.device_status === 'Active' ? (
-                          <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-450 font-bold">
+                          <span className="flex items-center gap-1.5 text-emerald-600 font-bold">
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Connected
                           </span>
                         ) : nurse.device_status === 'Disconnected' ? (
@@ -384,7 +384,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                             <span className="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Signal Lost
                           </span>
                         ) : (
-                          <span className="text-slate-400 dark:text-slate-600 font-semibold">Inactive</span>
+                          <span className="text-slate-400 font-semibold">Inactive</span>
                         )}
                       </td>
                       <td className="px-6 py-4 font-mono text-[10px] text-slate-500">
@@ -409,7 +409,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                               onSelectNurseForReplacement(nurse);
                               onNavigateToTab('Fatigue Monitoring');
                             }}
-                            className="text-violet-600 hover:text-violet-800 text-xs font-bold"
+                            className="text-violet-600 hover:text-violet-850 text-xs font-bold"
                           >
                             View Bio-trend
                           </button>
@@ -420,7 +420,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
                 })
               ) : (
                 <tr>
-                  <td colSpan={9} className="px-6 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan={9} className="px-6 py-10 text-center text-slate-400">
                     No nurses found matching the active filters.
                   </td>
                 </tr>
@@ -431,11 +431,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
       </div>
       
       {/* Visual Heatmap Grid */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm text-left">
-        <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3">Live Presence Grid (24-Hour Roster)</h4>
+      <div className="rounded-xl border border-white/60 glass-card p-5 shadow-sm text-left">
+        <h4 className="text-sm font-bold text-slate-800 mb-3">Live Presence Grid (24-Hour Roster)</h4>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
           {nurses.map((nurse) => {
-            let bgClass = 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400';
+            let bgClass = 'bg-white/30 hover:bg-white/60 border-white/20 text-slate-500';
             if (nurse.status === 'Active') {
               bgClass = nurse.current_fatigue >= 75 
                 ? 'bg-rose-500 hover:bg-rose-600 border-rose-600 text-white' 
@@ -454,11 +454,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectNurseForReplacemen
             );
           })}
         </div>
-        <div className="flex flex-wrap gap-4 mt-4 text-[10px] justify-center text-slate-500 dark:text-slate-450 font-bold uppercase tracking-wider">
+        <div className="flex flex-wrap gap-4 mt-4 text-[10px] justify-center text-slate-500 font-bold uppercase tracking-wider">
           <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-purple-500"></span> Active (Healthy)</div>
           <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-amber-400"></span> On Break</div>
           <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-rose-500"></span> Active (Fatigued)</div>
-          <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-800"></span> Offline</div>
+          <div className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-white/30 border border-white/40"></span> Offline</div>
         </div>
       </div>
     </div>

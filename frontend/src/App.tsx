@@ -184,53 +184,60 @@ export const App: React.FC = () => {
   // 1. Unauthenticated Login Layout
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-sky-50 via-slate-50 to-teal-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 px-4">
-        <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-8 shadow-xl backdrop-blur-md">
+      <div className="relative flex min-h-screen items-center justify-center bg-slate-50 px-4 overflow-hidden select-none">
+        {/* Floating background blobs */}
+        <div className="liquid-blob-container">
+          <div className="liquid-blob blob-pink"></div>
+          <div className="liquid-blob blob-violet"></div>
+          <div className="liquid-blob blob-blue"></div>
+        </div>
+
+        <div className="w-full max-w-md rounded-2xl glass-card bg-white/40 p-8 shadow-xl border border-white/60 z-10 relative">
           <div className="flex flex-col items-center gap-2 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600 text-white shadow-md">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm">
               <Activity size={24} />
             </div>
-            <h1 className="mt-4 text-xl font-bold text-slate-900 dark:text-white leading-none">
+            <h1 className="mt-4 text-xl font-bold text-slate-900 leading-none">
               Clinical Sign In
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Nurse Fatigue Intelligence & Workforce Optimization Platform</p>
+            <p className="text-xs text-slate-500 font-medium mt-1">RESTAWARE Fatigue Intelligence Platform</p>
           </div>
 
           {loginError && (
-            <div className="mt-6 rounded-lg border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/20 p-3 text-xs font-semibold text-rose-700 dark:text-rose-450 animate-in fade-in slide-in-from-top-1 duration-150 text-left">
+            <div className="mt-6 rounded-lg border border-rose-200 bg-rose-50/50 p-3 text-xs font-semibold text-rose-700 animate-in fade-in slide-in-from-top-1 duration-150 text-left">
               {loginError}
             </div>
           )}
 
           <form onSubmit={handleLogin} className="mt-6 space-y-4">
             <div className="space-y-1.5 text-left">
-              <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Account Username</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Account Username</label>
               <input
                 type="text"
                 placeholder="Username (e.g. admin1)"
                 required
                 value={loginForm.username}
                 onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
-                className="w-full rounded-lg border border-slate-200 dark:border-slate-800 p-2.5 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 transition"
+                className="w-full rounded-lg border border-slate-200 p-2.5 text-xs bg-white/50 text-slate-800 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition"
               />
             </div>
 
             <div className="space-y-1.5 text-left">
-              <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">Security Password</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Security Password</label>
               <input
                 type="password"
                 placeholder="Password"
                 required
                 value={loginForm.password}
                 onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                className="w-full rounded-lg border border-slate-200 dark:border-slate-800 p-2.5 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 transition"
+                className="w-full rounded-lg border border-slate-200 p-2.5 text-xs bg-white/50 text-slate-800 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition"
               />
             </div>
 
             <button
               type="submit"
               disabled={loggingIn}
-              className="w-full rounded-lg bg-gradient-to-r from-purple-500 to-indigo-650 hover:from-purple-600 hover:to-indigo-750 py-2.5 text-xs font-bold text-white transition shadow-sm flex items-center justify-center gap-1.5 uppercase"
+              className="w-full rounded-lg bg-violet-600 hover:bg-violet-750 py-2.5 text-xs font-bold text-white transition shadow-sm flex items-center justify-center gap-1.5 uppercase"
             >
               {loggingIn ? (
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -248,7 +255,14 @@ export const App: React.FC = () => {
 
   // 2. Main Authenticated Console Layout
   return (
-    <div className="flex h-screen w-screen bg-slate-50 dark:bg-slate-950 overflow-hidden text-slate-800 dark:text-slate-100">
+    <div className="relative flex h-screen w-screen bg-slate-50 overflow-hidden text-slate-800 select-none">
+      {/* Floating background blobs */}
+      <div className="liquid-blob-container">
+        <div className="liquid-blob blob-pink"></div>
+        <div className="liquid-blob blob-violet"></div>
+        <div className="liquid-blob blob-blue"></div>
+      </div>
+
       {/* Sidebar navigation */}
       <Sidebar 
         currentTab={currentTab}
@@ -258,18 +272,18 @@ export const App: React.FC = () => {
       />
 
       {/* Main Container */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden z-10 bg-transparent">
         
         {/* Top Header */}
-        <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-8 flex-shrink-0">
+        <header className="flex h-16 items-center justify-between border-b border-white/20 bg-white/35 backdrop-blur-md px-8 flex-shrink-0">
           
           {/* Left search bar */}
           <div className="flex items-center gap-3 w-64 md:w-80">
-            <Search size={16} className="text-slate-400 dark:text-slate-500" />
+            <Search size={16} className="text-slate-400" />
             <input
               type="text"
               placeholder="Search projects, clinicians..."
-              className="bg-transparent text-xs text-slate-700 dark:text-slate-200 focus:outline-none w-full placeholder-slate-400 dark:placeholder-slate-500"
+              className="bg-transparent text-xs text-slate-705 focus:outline-none w-full placeholder-slate-400"
             />
           </div>
 
@@ -279,8 +293,8 @@ export const App: React.FC = () => {
             {/* Live Connection badge */}
             <div className={`hidden lg:flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold border transition ${
               isConnected 
-                ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900 text-emerald-700 dark:text-emerald-450' 
-                : 'bg-rose-50 dark:bg-rose-950/20 border-rose-100 dark:border-rose-900 text-rose-700 dark:text-rose-450'
+                ? 'bg-emerald-50 border-emerald-100 text-emerald-700' 
+                : 'bg-rose-50 border-rose-100 text-rose-700'
             }`}>
               {isConnected ? (
                 <>
@@ -294,13 +308,13 @@ export const App: React.FC = () => {
             </div>
 
             {/* Clock */}
-            <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-400 dark:text-slate-500">
+            <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-400">
               <Clock size={14} />
               <span>{time}</span>
             </div>
 
             {/* Mail Icon */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-800 dark:hover:text-slate-200 transition relative cursor-pointer">
+            <div className="rounded-lg border border-white/30 bg-white/20 backdrop-blur-xs p-2 text-slate-500 hover:bg-white/40 hover:text-slate-800 transition relative cursor-pointer shadow-xs">
               <Mail size={15} />
               <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5 rounded-full bg-amber-500"></span>
             </div>
@@ -309,10 +323,10 @@ export const App: React.FC = () => {
             <div className="relative">
               <button 
                 onClick={() => setIsAlertsDropdownOpen(!isAlertsDropdownOpen)}
-                className={`rounded-lg border p-2 transition ${
+                className={`rounded-lg border transition shadow-xs ${
                   recentAlerts.length > 0 
-                    ? 'bg-rose-50/50 dark:bg-rose-950/20 border-rose-100 dark:border-rose-900 text-rose-600 dark:text-rose-400' 
-                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850'
+                    ? 'bg-rose-50/50 border-rose-200 text-rose-600' 
+                    : 'border-white/30 bg-white/20 backdrop-blur-xs text-slate-500 hover:bg-white/40'
                 }`}
               >
                 <Bell size={15} className={recentAlerts.length > 0 ? 'text-rose-500 animate-swing' : ''} />
@@ -325,15 +339,15 @@ export const App: React.FC = () => {
 
               {/* Collapsible Alerts Dropdown drawer */}
               {isAlertsDropdownOpen && (
-                <div className="absolute right-0 mt-2 z-50 w-80 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
-                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2 mb-3">
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1">
+                <div className="absolute right-0 mt-2 z-50 w-80 rounded-xl glass-card bg-white/60 p-4 shadow-xl border border-white/40 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+                    <span className="text-xs font-bold text-slate-850 uppercase tracking-wider flex items-center gap-1">
                       <AlertOctagon size={14} className="text-rose-500" /> Active Roster Alarms
                     </span>
                     {recentAlerts.length > 0 && (
                       <button 
                         onClick={clearRecentAlerts}
-                        className="text-[10px] text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350 font-bold"
+                        className="text-[10px] text-slate-400 hover:text-slate-600 font-bold"
                       >
                         Dismiss All
                       </button>
@@ -349,13 +363,13 @@ export const App: React.FC = () => {
                             setCurrentTab('Alerts');
                             setIsAlertsDropdownOpen(false);
                           }}
-                          className="rounded-lg bg-rose-50/50 dark:bg-rose-950/10 border border-rose-100 dark:border-rose-900/50 p-2.5 text-[10px] font-semibold text-rose-900 dark:text-rose-200 leading-snug cursor-pointer hover:bg-rose-50 dark:hover:bg-rose-950/20 transition"
+                          className="rounded-lg bg-rose-50/50 border border-rose-100 p-2.5 text-[10px] font-semibold text-rose-900 leading-snug cursor-pointer hover:bg-rose-50 transition"
                         >
                           {msgStr}
                         </div>
                       ))
                     ) : (
-                      <p className="py-6 text-center text-[10px] text-slate-400 dark:text-slate-550">No active fatigue warnings triggered.</p>
+                      <p className="py-6 text-center text-[10px] text-slate-400">No active fatigue warnings triggered.</p>
                     )}
                   </div>
                 </div>
@@ -366,24 +380,24 @@ export const App: React.FC = () => {
             <button 
               onClick={toggleTheme} 
               title={theme === 'light' ? "Switch to Night Mode" : "Switch to Light Mode"}
-              className="rounded-lg border border-slate-200 dark:border-slate-800 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-800 dark:hover:text-slate-200 transition"
+              className="rounded-lg border border-white/30 bg-white/20 backdrop-blur-xs p-2 text-slate-500 hover:bg-white/40 hover:text-slate-850 transition"
             >
               {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
             </button>
 
-            <span className="h-6 w-[1px] bg-slate-200 dark:bg-slate-800"></span>
+            <span className="h-6 w-[1px] bg-slate-200/50"></span>
 
             {/* Supervisor Profile Widget */}
             <div className="flex items-center gap-2">
               <div className="relative cursor-pointer">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-bold text-xs uppercase shadow-sm">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-violet-500 to-sky-500 text-white font-bold text-xs uppercase shadow-sm">
                   {username ? username.slice(0, 2) : 'SP'}
                 </div>
-                <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900"></span>
+                <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border-2 border-white"></span>
               </div>
               <div className="hidden md:flex flex-col text-left">
-                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 leading-none capitalize">{username || 'Supervisor'}</span>
-                <span className="text-[8px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Roster Manager</span>
+                <span className="text-[11px] font-bold text-slate-800 leading-none capitalize">{username || 'Supervisor'}</span>
+                <span className="text-[8px] font-semibold text-slate-400 mt-0.5">Roster Manager</span>
               </div>
             </div>
 
@@ -391,7 +405,7 @@ export const App: React.FC = () => {
             <button
               onClick={handleLogout}
               title="Session Sign Out"
-              className="rounded-lg border border-rose-100 dark:border-rose-950/40 p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition cursor-pointer"
+              className="rounded-lg border border-rose-100 p-2 text-rose-500 hover:bg-rose-50 transition cursor-pointer"
             >
               <LogOut size={15} />
             </button>
@@ -400,7 +414,7 @@ export const App: React.FC = () => {
         </header>
 
         {/* Main Content Workspace */}
-        <main className="flex-1 overflow-hidden bg-slate-50 dark:bg-slate-950">
+        <main className="flex-1 overflow-hidden bg-transparent">
           {renderTabContent()}
         </main>
 
