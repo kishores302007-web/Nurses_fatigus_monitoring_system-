@@ -31,6 +31,7 @@ interface ProposedAllotment {
   average_past_fatigue: number;
   hours_rest_obtained: number;
   score: number;
+  shift_classification?: string;
 }
 
 export const DutyAllotment: React.FC<DutyAllotmentProps> = () => {
@@ -298,12 +299,27 @@ export const DutyAllotment: React.FC<DutyAllotmentProps> = () => {
                 return (
                   <div key={index} className="rounded-lg border border-white/50 bg-white/55 p-3.5 shadow-sm space-y-3 relative hover:border-violet-300 transition">
                     {/* Header: Dept & Shift Type */}
-                    <div className="flex justify-between items-center border-b border-slate-100 pb-1.5">
-                      <span className="font-extrabold text-xs text-slate-800">{allot.department}</span>
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase ${
-                        allot.shift_type === 'Morning' 
+                    <div className="flex justify-between items-start border-b border-slate-100 pb-1.5 gap-1">
+                      <div className="flex flex-col text-left">
+                        <span className="font-extrabold text-xs text-slate-800 leading-tight">{allot.department}</span>
+                        {allot.shift_classification && (
+                          <span className={`text-[8px] font-black uppercase mt-1 px-1.5 py-0.5 rounded w-max ${
+                            allot.shift_classification === 'Double Shift'
+                              ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white'
+                              : 'bg-slate-100 text-slate-550 border border-slate-200'
+                          }`}>
+                            {allot.shift_classification}
+                          </span>
+                        )}
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase shrink-0 ${
+                        allot.shift_type.includes('Morning') && !allot.shift_type.includes('+')
                           ? 'bg-sky-50 text-sky-700 border border-sky-100' 
-                          : 'bg-indigo-50 text-indigo-700 border border-indigo-100'
+                          : allot.shift_type.includes('Afternoon') && !allot.shift_type.includes('+')
+                          ? 'bg-amber-50 text-amber-700 border border-amber-150'
+                          : allot.shift_type.includes('Night') && !allot.shift_type.includes('+')
+                          ? 'bg-indigo-50 text-indigo-700 border border-indigo-100'
+                          : 'bg-purple-50 text-purple-700 border border-purple-150'
                       }`}>
                         {allot.shift_type}
                       </span>
@@ -316,9 +332,9 @@ export const DutyAllotment: React.FC<DutyAllotmentProps> = () => {
                     </div>
 
                     {/* Shift Time */}
-                    <div className="flex items-center gap-1 text-[10px] text-slate-500 bg-slate-50/50 p-1.5 rounded border border-slate-100">
+                    <div className="flex items-center gap-1 text-[10px] text-slate-550 bg-slate-50/50 p-1.5 rounded border border-slate-100">
                       <Clock size={11} className="text-slate-400 shrink-0" />
-                      <span>{startTime} - {endTime} (12.0h)</span>
+                      <span>{startTime} - {endTime} ({allot.duration_hours.toFixed(1)}h)</span>
                     </div>
 
                     {/* Metrics Grid */}

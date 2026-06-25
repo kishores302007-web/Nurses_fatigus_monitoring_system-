@@ -173,6 +173,7 @@ class ShiftAllotProposed(BaseModel):
     duration_hours: float
     start_time: str
     end_time: str
+    shift_classification: str = "Single Shift"
 
 class ProposedFixtureConfirm(BaseModel):
     allotments: List[ShiftAllotProposed]

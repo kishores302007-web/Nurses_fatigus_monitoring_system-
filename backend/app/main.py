@@ -636,29 +636,34 @@ def get_auto_fixture(db: Session = Depends(get_db)):
         })
         
     # 4 wards: ICU, Emergency, Cardiology, General Ward
-    # 2 rotations: Morning (07:00 to 19:00), Night (19:00 to 07:00)
     wards = ["ICU", "Emergency", "Cardiology", "General Ward"]
-    shift_types = ["Morning", "Night"]
+    
+    # 3 rotations: Morning (07:00 - 15:00), Afternoon (15:00 - 23:00), Night (23:00 - 07:00)
+    blocks_def = [
+        {"name": "Morning", "start_hour": 7, "duration": 8},
+        {"name": "Afternoon", "start_hour": 15, "duration": 8},
+        {"name": "Night", "start_hour": 23, "duration": 8}
+    ]
     
     proposed_allotments = []
     assigned_nurse_ids = set()
     
     for dept in wards:
-        for shift_type in shift_types:
-            # Shift timing datetimes
-            if shift_type == "Morning":
-                start_dt = datetime(tomorrow_date.year, tomorrow_date.month, tomorrow_date.day, 7, 0, 0)
-                end_dt = start_dt + timedelta(hours=12)
-            else:
-                start_dt = datetime(tomorrow_date.year, tomorrow_date.month, tomorrow_date.day, 19, 0, 0)
-                end_dt = start_dt + timedelta(hours=12)
-                
-            # Filter eligible nurses:
+        b = 0
+        while b < len(blocks_def):
+            block = blocks_def[b]
+            
+            # Start and End Datetime calculations
+            # Note: Night shift starts at 23:00 and ends the next morning at 07:00
+            start_dt = datetime(tomorrow_date.year, tomorrow_date.month, tomorrow_date.day, block["start_hour"], 0, 0)
+            end_dt = start_dt + timedelta(hours=block["duration"])
+            
+            # Filter eligible standby/offline nurses
             eligible = []
             for ns in nurse_stats:
                 if ns["nurse"].id in assigned_nurse_ids:
                     continue
-                # Rest duration check
+                # Rest duration check (minimum 12 hours since last completed shift)
                 rest_duration = (start_dt - ns["last_shift_end"]).total_seconds() / 3600.0
                 if rest_duration < 12.0:
                     continue
@@ -672,9 +677,7 @@ def get_auto_fixture(db: Session = Depends(get_db)):
                     if active_shift.end_time > (start_dt - timedelta(hours=12)):
                         continue
                 
-                # Score the eligibility:
-                # We want to minimize total_hours, minimize avg_fatigue, and maximize rest_duration.
-                # Lower score is better:
+                # Score the suitability (lower score is better)
                 score = ns["total_hours"] + (ns["avg_fatigue"] * 0.1) - (rest_duration * 0.05)
                 
                 eligible.append({
@@ -688,6 +691,30 @@ def get_auto_fixture(db: Session = Depends(get_db)):
                 eligible.sort(key=lambda x: x["score"])
                 selected = eligible[0]
                 selected_nurse = selected["ns_data"]["nurse"]
+                
+                # Check if this nurse qualifies for a Double Shift (16.0 hours duration)
+                # Criteria: Not the last block, avg fatigue < 25.0%, and obtained at least 24 hours of rest
+                is_double_eligible = (
+                    b < len(blocks_def) - 1 and
+                    selected["ns_data"]["avg_fatigue"] < 25.0 and
+                    selected["rest_duration"] >= 24.0
+                )
+                
+                if is_double_eligible:
+                    # Promote to Double Shift
+                    next_block = blocks_def[b+1]
+                    duration = 16.0
+                    shift_type = f"{block['name']} + {next_block['name']}"
+                    classification = "Double Shift"
+                    end_dt = start_dt + timedelta(hours=16)
+                    b += 2 # Skip the next block since this nurse covers both
+                else:
+                    # Regular Single Shift
+                    duration = 8.0
+                    shift_type = block["name"]
+                    classification = "Single Shift"
+                    b += 1
+                
                 assigned_nurse_ids.add(selected_nurse.id)
                 
                 proposed_allotments.append({
@@ -696,14 +723,18 @@ def get_auto_fixture(db: Session = Depends(get_db)):
                     "nurse_code": selected_nurse.nurse_id,
                     "department": dept,
                     "shift_type": shift_type,
-                    "duration_hours": 12.0,
+                    "duration_hours": duration,
                     "start_time": start_dt.isoformat(),
                     "end_time": end_dt.isoformat(),
                     "past_hours_worked": round(selected["ns_data"]["total_hours"], 1),
                     "average_past_fatigue": round(selected["ns_data"]["avg_fatigue"], 1),
                     "hours_rest_obtained": round(selected["rest_duration"], 1),
-                    "score": round(selected["score"], 1)
+                    "score": round(selected["score"], 1),
+                    "shift_classification": classification
                 })
+            else:
+                # Fallback: if no eligible nurse, just advance to next block to avoid infinite loop
+                b += 1
                 
     return proposed_allotments
 
